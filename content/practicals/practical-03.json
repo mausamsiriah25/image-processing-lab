@@ -1,0 +1,143 @@
+{
+  "id": "practical-03",
+  "number": 3,
+  "type": "practical",
+  "title": "2D Geometric Transformations",
+  "category": "Geometric Transformations",
+  "requiresImage": true,
+  "multiImage": false,
+  "aim": "To develop programs to apply the following 2-D geometric transformation operations on an image: 1. Translation 2. Rotation 3. Scaling 4. Shearing 5. Reflection 6. Cropping",
+  "objectives": [
+    "To implement basic 2-D geometric transformations such as translation, rotation, and scaling using transformation matrices.",
+    "To apply shearing and reflection operations to manipulate the geometry of digital images.",
+    "To perform cropping operations to extract specific regions of interest (ROI) from images.",
+    "To understand the effect of different geometric transformations on the spatial structure of an image.",
+    "To understand how multiple transformations can be combined for image preprocessing and manipulation."
+  ],
+  "theory": "### Image Transformation\n\nImage transformation is the process of modifying an image by changing its pixel data or geometric structure. Geometric transformations are commonly used in image processing to change the position, orientation, size, or shape of an image.\n\nThe major transformations performed in this practical are:\n\n* **Translation**\n* **Reflection**\n* **Rotation**\n* **Scaling**\n* **Cropping**\n* **Shearing in X-axis**\n* **Shearing in Y-axis**\n\n### 1. Image Translation\n\nImage translation is the process of shifting an image from one location to another without changing its size or orientation.\n\nA translation matrix is used to specify the amount of horizontal and vertical movement.\n\nFor example:\n\n```text\n[ 1  0  Tx ]\n[ 0  1  Ty ]\n```\n\nwhere `Tx` represents horizontal movement and `Ty` represents vertical movement.\n\nOpenCV uses `warpAffine()` to perform translation.\n\n### 2. Affine Transformation\n\nAn affine transformation preserves parallel lines in the original image in the transformed image. It can be used for operations such as translation, rotation, scaling, and shearing.\n\nOpenCV provides `cv2.warpAffine()` for applying affine transformations.\n\n### 3. Image Reflection\n\nImage reflection or flipping is used to reverse an image horizontally or vertically.\n\nReflection can be performed by changing the sign of the corresponding scaling factor in the transformation matrix.\n\n### 4. Image Rotation\n\nImage rotation is the process of rotating an image through a specified angle around a particular point, generally the center of the image.\n\nOpenCV provides `getRotationMatrix2D()` to generate the rotation matrix and `warpAffine()` to apply it.\n\nRotation is commonly used in image alignment, matching, and data augmentation.\n\n### 5. Image Scaling\n\nImage scaling is the process of changing the size of an image. It can either enlarge or shrink an image.\n\nOpenCV provides the `resize()` function for scaling images.\n\nDifferent interpolation methods can be used depending on whether the image is being enlarged or reduced.\n\n### 6. Image Cropping\n\nCropping is the process of removing unwanted outer portions of an image and extracting a particular region of interest.\n\nSince OpenCV loads an image as a NumPy array, array indexing can be used to crop an image.\n\nFor example:\n\n```python\ncropped_img = img[100:300, 100:300]\n```\n\nThis extracts the selected region from the image.\n\n### 7. Image Shearing\n\nShearing changes the shape of an image by shifting its pixels along one direction.\n\nThere are two types:\n\n* **X-axis shearing:** Pixels are shifted horizontally.\n* **Y-axis shearing:** Pixels are shifted vertically.\n\nA shearing transformation changes the position of pixels while maintaining the general structure of the image.",
+  "algorithm": [
+    "Translation",
+    "Rotation",
+    "Scaling",
+    "Shearing",
+    "Reflection",
+    "Cropping"
+  ],
+  "referenceCode": "```python\nimport numpy as np\nimport cv2 as cv\n\nimg = cv.imread(\"girl.jpg\", 0)\n\nrows, cols = img.shape\n\n# Translation matrix\nM = np.float32([\n    [1, 0, 100],\n    [0, 1, 50]\n])\n\n# Apply translation\ndst = cv.warpAffine(img, M, (cols, rows))\n\ncv.imshow(\"Translated Image\", dst)\n\ncv.waitKey(0)\ncv.destroyAllWindows()\n\nimport numpy as np\nimport cv2 as cv\n\nimg = cv.imread(\"girl.jpg\", 0)\n\nrows, cols = img.shape\n\n# Reflection along X-axis\nM = np.float32([\n    [1, 0, 0],\n    [0, -1, rows],\n    [0, 0, 1]\n])\n\nreflected_img = cv.warpPerspective(\n    img,\n    M,\n    (int(cols), int(rows))\n)\n\ncv.imshow(\"Reflected Image\", reflected_img)\n\ncv.imwrite(\"reflection_out.jpg\", reflected_img)\n\ncv.waitKey(0)\ncv.destroyAllWindows()\n\nimport numpy as np\nimport cv2 as cv\n\nimg = cv.imread(\"girlImage.jpg\", 0)\n\nrows, cols = img.shape\n\n# Create rotation matrix\nM = cv.getRotationMatrix2D(\n    (cols / 2, rows / 2),\n    30,\n    0.6\n)\n\n# Apply rotation\nimg_rotation = cv.warpAffine(\n    img,\n    M,\n    (cols, rows)\n)\n\ncv.imshow(\"Rotated Image\", img_rotation)\n\ncv.imwrite(\"rotation_out.jpg\", img_rotation)\n\ncv.waitKey(0)\ncv.destroyAllWindows()\n\nimport numpy as np\nimport cv2 as cv\n\nimg = cv.imread(\"girlImage.jpg\", 0)\n\nrows, cols = img.shape\n\n# Shrink image\nimg_shrinked = cv.resize(\n    img,\n    (250, 200),\n    interpolation=cv.INTER_AREA\n)\n\ncv.imshow(\"Shrinked Image\", img_shrinked)\n\n# Enlarge image\nimg_enlarged = cv.resize(\n    img_shrinked,\n    None,\n    fx=1.5,\n    fy=1.5,\n    interpolation=cv.INTER_CUBIC\n)\n\ncv.imshow(\"Enlarged Image\", img_enlarged)\n\ncv.waitKey(0)\ncv.destroyAllWindows()\n\nimport numpy as np\nimport cv2 as cv\n\nimg = cv.imread(\"girlImage.jpg\", 0)\n\n# Crop image\ncropped_img = img[100:300, 100:300]\n\ncv.imwrite(\"cropped_out.jpg\", cropped_img)\n\ncv.imshow(\"Cropped Image\", cropped_img)\n\ncv.waitKey(0)\ncv.destroyAllWindows()\n\nimport numpy as np\nimport cv2 as cv\n\nimg = cv.imread(\"girlImage.jpg\", 0)\n\nrows, cols = img.shape\n\n# X-axis shearing matrix\nM = np.float32([\n    [1, 0.5, 0],\n    [0, 1, 0],\n    [0, 0, 1]\n])\n\nsheared_img = cv.warpPerspective(\n    img,\n    M,\n    (int(cols * 1.5), int(rows * 1.5))\n)\n\ncv.imshow(\"X-Axis Sheared Image\", sheared_img)\n\ncv.waitKey(0)\ncv.destroyAllWindows()\n\nimport numpy as np\nimport cv2 as cv\n\nimg = cv.imread(\"girlImage.jpg\", 0)\n\nrows, cols = img.shape\n\n# Y-axis shearing matrix\nM = np.float32([\n    [1, 0, 0],\n    [0.5, 1, 0],\n    [0, 0, 1]\n])\n\nsheared_img = cv.warpPerspective(\n    img,\n    M,\n    (int(cols * 1.5), int(rows * 1.5))\n)\n\ncv.imshow(\"Y-Axis Sheared Image\", sheared_img)\n\ncv.imwrite(\"sheared_y_axis_out.jpg\", sheared_img)\n\ncv.waitKey(0)\ncv.destroyAllWindows()\n```",
+  "syntax": [
+    "cv2.imread(filename, flag)",
+    "cv2.warpAffine(src, M, dsize)",
+    "cv2.getRotationMatrix2D(center, angle, scale)",
+    "cv2.resize(src, dsize, interpolation)",
+    "cropped_img = img[y1:y2, x1:x2]",
+    "cv2.warpPerspective(src, M, dsize)",
+    "cv2.imshow(window_name, image)",
+    "cv2.imwrite(filename, image)",
+    "cv2.waitKey(0)",
+    "cv2.destroyAllWindows()"
+  ],
+  "parameters": [
+    {
+      "key": "operation",
+      "label": "Transformation",
+      "type": "select",
+      "default": "translation",
+      "options": [
+        {
+          "value": "translation",
+          "label": "Translation"
+        },
+        {
+          "value": "reflection",
+          "label": "Reflection (X-axis)"
+        },
+        {
+          "value": "rotation",
+          "label": "Rotation"
+        },
+        {
+          "value": "shrink",
+          "label": "Shrink"
+        },
+        {
+          "value": "enlarge",
+          "label": "Enlarge"
+        },
+        {
+          "value": "crop",
+          "label": "Crop"
+        },
+        {
+          "value": "shear_x",
+          "label": "Shear (X-axis)"
+        },
+        {
+          "value": "shear_y",
+          "label": "Shear (Y-axis)"
+        },
+        {
+          "value": "all",
+          "label": "All Transformations"
+        }
+      ]
+    },
+    {
+      "key": "tx",
+      "label": "Translate X (px)",
+      "type": "number",
+      "min": -200,
+      "max": 200,
+      "step": 1,
+      "default": 50
+    },
+    {
+      "key": "ty",
+      "label": "Translate Y (px)",
+      "type": "number",
+      "min": -200,
+      "max": 200,
+      "step": 1,
+      "default": 50
+    },
+    {
+      "key": "angle",
+      "label": "Rotation angle (deg)",
+      "type": "slider",
+      "min": -180,
+      "max": 180,
+      "step": 1,
+      "default": 45
+    },
+    {
+      "key": "scale",
+      "label": "Scale factor",
+      "type": "slider",
+      "min": 0.1,
+      "max": 3,
+      "step": 0.1,
+      "default": 0.5
+    },
+    {
+      "key": "shearFactor",
+      "label": "Shear factor",
+      "type": "slider",
+      "min": -1,
+      "max": 1,
+      "step": 0.05,
+      "default": 0.2
+    }
+  ],
+  "expectedOutputs": [
+    "Translated",
+    "Reflected",
+    "Rotated",
+    "Shrunk",
+    "Enlarged",
+    "Cropped",
+    "Sheared (X)",
+    "Sheared (Y)"
+  ],
+  "observation": "Students should record the visual/numerical outcome of running this experiment on their own uploaded image here.",
+  "conclusion": "We have successfully studied and implemented various 2-D geometric transformations on digital images using Python and OpenCV. The practical demonstrated **translation, reflection, rotation, scaling, cropping, and shearing along the X and Y axes**. These transformations help in changing the position, orientation, size, shape, and selected regions of images and are useful in various image processing and computer vision applications. ``` xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ```",
+  "postLab": []
+}

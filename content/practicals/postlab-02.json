@@ -1,0 +1,82 @@
+{
+  "id": "postlab-02",
+  "number": 2,
+  "type": "postlab",
+  "title": "Colour Space Conversion",
+  "category": "Colour Processing",
+  "requiresImage": true,
+  "multiImage": false,
+  "aim": "To convert images between the RGB, HSV, YCrCb, and Lab colour spaces and analyze how colour information is encoded in each colour space.",
+  "objectives": [
+    "To understand and apply colour space conversion techniques using OpenCV.",
+    "To convert images between RGB, HSV, YCrCb, and Lab colour spaces.",
+    "To analyze how hue, brightness, luminance, and chrominance are represented in different colour spaces.",
+    "To visualize individual colour channels and understand their contribution to image information.",
+    "To study the suitability of different colour spaces for image enhancement, segmentation, object detection, and compression."
+  ],
+  "theory": "A **colour model** is a mathematical method of representing colours using numerical values. A **colour space** defines how these values are interpreted to represent colours digitally.\n\nDifferent colour spaces are useful for different image processing applications because they separate colour and intensity information in different ways.\n\n### 1. RGB Colour Space\n\nRGB stands for **Red, Green, and Blue**.\n\nThe RGB colour model represents a colour using different amounts of red, green, and blue components.\n\nEach pixel generally contains three values:\n\n* **R:** Red component\n* **G:** Green component\n* **B:** Blue component\n\nFor an 8-bit image, each component normally ranges from **0 to 255**.\n\nRGB is commonly used for:\n\n* Computer displays\n* Digital cameras\n* Basic image storage\n* Image visualization\n\nA limitation of RGB is that colour and brightness are not separated, making some image processing tasks more difficult.\n\n### 2. HSV Colour Space\n\nHSV stands for:\n\n* **H:** Hue\n* **S:** Saturation\n* **V:** Value\n\nHSV represents colours in a way that is closer to human colour perception.\n\n* **Hue:** Represents the dominant colour.\n* **Saturation:** Represents the intensity or purity of the colour.\n* **Value:** Represents brightness.\n\nIn OpenCV, Hue is represented from **0 to 179** for an 8-bit HSV image, while Saturation and Value range from **0 to 255**.\n\nHSV is useful for:\n\n* Colour-based segmentation\n* Object detection\n* Object tracking\n* Colour filtering\n\n### 3. YCrCb Colour Space\n\nYCrCb separates luminance from chrominance.\n\n* **Y:** Luminance or brightness component\n* **Cr:** Red-difference chrominance component\n* **Cb:** Blue-difference chrominance component\n\nThis separation is useful because the human eye is more sensitive to brightness than to colour differences.\n\nYCrCb is commonly used in:\n\n* Image and video compression\n* Image processing\n* Colour analysis\n* Chroma subsampling\n\n### 4. Lab Colour Space\n\nLab, or **CIELAB**, consists of three components:\n\n* **L*:** Lightness\n* **a*:** Green to red colour component\n* **b*:** Blue to yellow colour component\n\nLab is designed to represent colour differences more closely according to human visual perception.\n\nIt is useful for:\n\n* Colour correction\n* Image enhancement\n* Colour comparison\n* Image segmentation\n* Printing and textile applications\n\n### 5. Grayscale\n\nA grayscale image contains only one channel representing intensity.\n\nFor an 8-bit grayscale image, pixel intensity ranges from:\n\n**0 to 255**\n\nwhere:\n\n* **0 = Black**\n* **255 = White**\n\nGrayscale images require less data than colour images and are commonly used in image processing tasks where colour information is not required.\n\n### OpenCV Colour Conversion\n\nOpenCV provides the `cv2.cvtColor()` function for converting images between different colour spaces.\n\nFor example:\n\n```python id=\"9j3x8k\"\ncv2.cvtColor(image, cv2.COLOR_BGR2HSV)\n```\n\nconverts a BGR image to HSV.\n\nSome commonly used conversion codes are:\n\n* `cv2.COLOR_BGR2RGB`\n* `cv2.COLOR_BGR2GRAY`\n* `cv2.COLOR_BGR2HSV`\n* `cv2.COLOR_BGR2YCrCb`\n* `cv2.COLOR_BGR2LAB`\n* `cv2.COLOR_RGB2BGR`\n* `cv2.COLOR_RGB2GRAY`\n* `cv2.COLOR_RGB2HSV`\n* `cv2.COLOR_RGB2YCrCb`\n* `cv2.COLOR_RGB2LAB`\n\nOpenCV normally reads colour images in **BGR** order rather than RGB.",
+  "algorithm": [
+    "To understand and apply colour space conversion techniques using OpenCV.",
+    "To convert images between RGB, HSV, YCrCb, and Lab colour spaces.",
+    "To analyze how hue, brightness, luminance, and chrominance are represented in different colour spaces.",
+    "To visualize individual colour channels and understand their contribution to image information.",
+    "To study the suitability of different colour spaces for image enhancement, segmentation, object detection, and compression."
+  ],
+  "referenceCode": "```python\nimport cv2\n\n# Read image in grayscale mode\nimg = cv2.imread(\n    \"color.png\",\n    cv2.IMREAD_GRAYSCALE\n)\n\n# Check if image was loaded\nif img is None:\n    raise FileNotFoundError(\n        \"Image not found. Check the file path.\"\n    )\n\n# Display grayscale image\ncv2.imshow(\n    \"Grayscale Image\",\n    img\n)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\n\n# Read image\nimage = cv2.imread(\"cspace.png\")\n\n# Check if image is loaded\nif image is None:\n    raise FileNotFoundError(\n        \"Image not found. Check the file path.\"\n    )\n\n# Split BGR channels\nB, G, R = cv2.split(image)\n\n# Display original image\ncv2.imshow(\"Original\", image)\ncv2.waitKey(0)\n\n# Display blue channel\ncv2.imshow(\"Blue\", B)\ncv2.waitKey(0)\n\n# Display green channel\ncv2.imshow(\"Green\", G)\ncv2.waitKey(0)\n\n# Display red channel\ncv2.imshow(\"Red\", R)\ncv2.waitKey(0)\n\ncv2.destroyAllWindows()\n\nimport cv2\n\n# Read image\nimg = cv2.imread(\"color2.png\")\n\n# Check if image is loaded\nif img is None:\n    raise FileNotFoundError(\n        \"Image not found. Check the file path.\"\n    )\n\n# Convert BGR to YCrCb\nycrcb_image = cv2.cvtColor(\n    img,\n    cv2.COLOR_BGR2YCrCb\n)\n\n# Display YCrCb image\ncv2.imshow(\n    \"YCrCb Image\",\n    ycrcb_image\n)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\n\n# Read image\nimg = cv2.imread(\"color2.png\")\n\n# Check if image is loaded\nif img is None:\n    raise FileNotFoundError(\n        \"Image not found. Check the file path.\"\n    )\n\n# Convert BGR to HSV\nhsv_image = cv2.cvtColor(\n    img,\n    cv2.COLOR_BGR2HSV\n)\n\n# Display HSV image\ncv2.imshow(\n    \"HSV Image\",\n    hsv_image\n)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\n\n# Read image\nimage = cv2.imread(\"color2.png\")\n\n# Check if image is loaded\nif image is None:\n    raise FileNotFoundError(\n        \"Image not found. Check the file path.\"\n    )\n\n# Convert BGR to Lab\nlab_image = cv2.cvtColor(\n    image,\n    cv2.COLOR_BGR2LAB\n)\n\n# Display Lab image\ncv2.imshow(\n    \"Lab Image\",\n    lab_image\n)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\n\n# Read image\nimage = cv2.imread(\"color2.png\")\n\nif image is None:\n    raise FileNotFoundError(\n        \"Image not found. Check the file path.\"\n    )\n\n# Convert to different colour spaces\ngray = cv2.cvtColor(\n    image,\n    cv2.COLOR_BGR2GRAY\n)\n\nrgb = cv2.cvtColor(\n    image,\n    cv2.COLOR_BGR2RGB\n)\n\nhsv = cv2.cvtColor(\n    image,\n    cv2.COLOR_BGR2HSV\n)\n\nycrcb = cv2.cvtColor(\n    image,\n    cv2.COLOR_BGR2YCrCb\n)\n\nlab = cv2.cvtColor(\n    image,\n    cv2.COLOR_BGR2LAB\n)\n\n# Display images\ncv2.imshow(\"Original BGR\", image)\ncv2.imshow(\"Grayscale\", gray)\ncv2.imshow(\"HSV\", hsv)\ncv2.imshow(\"YCrCb\", ycrcb)\ncv2.imshow(\"Lab\", lab)\n\n# RGB is converted back to BGR only for correct OpenCV display\nrgb_display = cv2.cvtColor(\n    rgb,\n    cv2.COLOR_RGB2BGR\n)\n\ncv2.imshow(\"RGB\", rgb_display)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n```",
+  "syntax": [
+    "cv2.imread(filename)",
+    "cv2.imread(filename, cv2.IMREAD_GRAYSCALE)",
+    "cv2.cvtColor(image, cv2.COLOR_BGR2RGB)",
+    "cv2.cvtColor(image, cv2.COLOR_BGR2HSV)",
+    "cv2.cvtColor(image, cv2.COLOR_BGR2YCrCb)",
+    "cv2.cvtColor(image, cv2.COLOR_BGR2LAB)",
+    "cv2.split(image)",
+    "cv2.imshow(window_name, image)",
+    "cv2.waitKey(0)",
+    "cv2.destroyAllWindows()"
+  ],
+  "parameters": [
+    {
+      "key": "targetSpace",
+      "label": "Target colour space",
+      "type": "select",
+      "default": "hsv",
+      "options": [
+        {
+          "value": "grayscale",
+          "label": "Grayscale"
+        },
+        {
+          "value": "channels",
+          "label": "B/G/R Channels"
+        },
+        {
+          "value": "ycrcb",
+          "label": "YCrCb"
+        },
+        {
+          "value": "hsv",
+          "label": "HSV"
+        },
+        {
+          "value": "lab",
+          "label": "Lab"
+        },
+        {
+          "value": "all",
+          "label": "All spaces"
+        }
+      ]
+    }
+  ],
+  "expectedOutputs": [
+    "Grayscale",
+    "B/G/R Channels",
+    "YCrCb",
+    "HSV",
+    "Lab"
+  ],
+  "observation": "Students should record the visual/numerical outcome of running this experiment on their own uploaded image here.",
+  "conclusion": "Thus, images were successfully converted between **RGB, HSV, YCrCb, Lab, and grayscale colour spaces** using OpenCV. The representation of colour, brightness, luminance, and chrominance in different colour spaces was studied. It was observed that different colour spaces are suitable for different image processing applications such as colour segmentation, object detection, enhancement, and compression. ``` ```",
+  "postLab": []
+}

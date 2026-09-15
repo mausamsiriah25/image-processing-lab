@@ -1,0 +1,75 @@
+{
+  "id": "practical-07",
+  "number": 7,
+  "type": "practical",
+  "title": "Lossless Image Compression",
+  "category": "Compression",
+  "requiresImage": true,
+  "multiImage": false,
+  "aim": "To implement a coding technique to achieve lossless compression and compare the original and compressed file sizes.",
+  "objectives": [
+    "To understand and apply lossless compression techniques such as Huffman Coding, Run Length Encoding (RLE), and LZW.",
+    "To implement a coding algorithm in Python for compressing digital image data without loss of information.",
+    "To compare the original and compressed file sizes and calculate the compression ratio.",
+    "To analyze the efficiency of lossless compression techniques for different input images.",
+    "To develop programming and problem-solving skills by implementing and verifying compression and decompression techniques."
+  ],
+  "theory": "Image compression is the process of reducing the storage size of an image while preserving the required information. Compression is useful for reducing storage requirements and improving the speed of image transmission and processing.\n\nThere are two main types of image compression:\n\n### 1. Lossless Compression\n\nLossless compression reduces the file size without losing any information. After decompression, the original data can be reconstructed exactly.\n\nExamples:\n\n* Run Length Encoding (RLE)\n* LZW (Lempel-Ziv-Welch)\n* Huffman Coding\n* PNG compression\n\n### 2. Lossy Compression\n\nLossy compression removes some information from the image to obtain a smaller file size. The reconstructed image may differ slightly from the original.\n\nJPEG is a common example of lossy image compression.\n\n### Redundancy in Image Compression\n\nImage compression mainly exploits:\n\n1. **Spatial Redundancy:** Neighboring pixels often have similar values.\n2. **Color Redundancy:** Large regions of an image may contain similar colors.\n3. **Coding Redundancy:** Frequently occurring values can be represented using shorter codes.\n\n### Run Length Encoding (RLE)\n\nRLE is a simple lossless compression technique. It replaces consecutive repeated values with a pair consisting of the value and its number of repetitions.\n\nFor example:\n\n`AAAAABBCC`\n\ncan be represented as:\n\n`(A,5), (B,2), (C,2)`\n\nRLE works particularly well when the input contains long runs of repeated values.\n\n### LZW Compression\n\nLZW stands for **Lempel-Ziv-Welch**. It is a dictionary-based lossless compression algorithm. Instead of storing repeated sequences directly, LZW creates a dictionary of frequently occurring patterns and represents them using numerical codes.\n\nThe compressed data can be decompressed using the same dictionary-building principle, allowing exact reconstruction of the original data.\n\n### Compression Ratio\n\nThe compression ratio indicates how effectively data has been compressed.\n\n**Compression Ratio = Original Size / Compressed Size**\n\nA higher compression ratio generally indicates better compression.",
+  "algorithm": [
+    "To understand and apply lossless compression techniques such as Huffman Coding, Run Length Encoding (RLE), and LZW.",
+    "To implement a coding algorithm in Python for compressing digital image data without loss of information.",
+    "To compare the original and compressed file sizes and calculate the compression ratio.",
+    "To analyze the efficiency of lossless compression techniques for different input images.",
+    "To develop programming and problem-solving skills by implementing and verifying compression and decompression techniques."
+  ],
+  "referenceCode": "```python\nimport cv2\nimport os\n\n# Function to calculate compression ratio\ndef compression_ratio(original_file, compressed_file):\n    original_size = os.path.getsize(original_file)\n    compressed_size = os.path.getsize(compressed_file)\n\n    ratio = original_size / compressed_size if compressed_size != 0 else 0\n\n    return ratio, original_size / 1024, compressed_size / 1024\n\n\n# Load the image\nimage_path = \"input_image.jpg\"\n\nimage = cv2.imread(image_path)\n\nif image is None:\n    raise FileNotFoundError(\"Image not found. Check the file path.\")\n\n\n# Lossy JPEG compression\njpeg_quality = 30\nlossy_output = \"compressed_lossy.jpg\"\n\ncv2.imwrite(\n    lossy_output,\n    image,\n    [cv2.IMWRITE_JPEG_QUALITY, jpeg_quality]\n)\n\n\n# Lossless PNG compression\npng_compression = 9\nlossless_output = \"compressed_lossless.png\"\n\ncv2.imwrite(\n    lossless_output,\n    image,\n    [cv2.IMWRITE_PNG_COMPRESSION, png_compression]\n)\n\n\n# Calculate compression ratios\nlossy_ratio, original_kb, lossy_kb = compression_ratio(\n    image_path,\n    lossy_output\n)\n\nlossless_ratio, _, lossless_kb = compression_ratio(\n    image_path,\n    lossless_output\n)\n\n\n# Print results\nprint(f\"Original Size: {original_kb:.2f} KB\")\nprint(f\"Lossy JPEG Size: {lossy_kb:.2f} KB\")\nprint(f\"Lossless PNG Size: {lossless_kb:.2f} KB\")\n\nprint(f\"Lossy Compression Ratio: {lossy_ratio:.2f}:1\")\nprint(f\"Lossless Compression Ratio: {lossless_ratio:.2f}:1\")\n\n\n# Display images\ncv2.imshow(\"Original Image\", image)\ncv2.imshow(\"Lossy JPEG\", cv2.imread(lossy_output))\ncv2.imshow(\"Lossless PNG\", cv2.imread(lossless_output))\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\n\n\n# RLE Encoding\ndef rle_encode(data):\n    encoding = []\n\n    if len(data) == 0:\n        return encoding\n\n    previous = data[0]\n    count = 1\n\n    for value in data[1:]:\n        if value == previous:\n            count += 1\n        else:\n            encoding.append((previous, count))\n            previous = value\n            count = 1\n\n    encoding.append((previous, count))\n\n    return encoding\n\n\n# RLE Decoding\ndef rle_decode(encoding):\n    data = []\n\n    for value, count in encoding:\n        data.extend([value] * count)\n\n    return data\n\n\n# Load grayscale image\nimage_path = \"input_image.jpg\"\n\nimg = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)\n\nif img is None:\n    raise FileNotFoundError(\"Image not found. Check the file path.\")\n\n\n# Convert image into 1D list\npixels = img.flatten().tolist()\n\n\n# Encode\nrle_encoded = rle_encode(pixels)\n\n\n# Decode\nrle_decoded = rle_decode(rle_encoded)\n\n\n# Verify lossless reconstruction\nif rle_decoded == pixels:\n    print(\"RLE decompression successful.\")\nelse:\n    print(\"RLE decompression failed.\")\n\n\n# Approximate compressed size\noriginal_size = len(pixels)\ncompressed_size = len(rle_encoded) * 5\n\nratio = original_size / compressed_size if compressed_size != 0 else 0\n\n\n# Display results\nprint(\"Original Size (approx):\", original_size, \"bytes\")\nprint(\"RLE Compressed Size (approx):\", compressed_size, \"bytes\")\nprint(f\"RLE Compression Ratio: {ratio:.2f}:1\")\n\n\n# Display image\ncv2.imshow(\"Original Image\", img)\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\n\n\n# LZW Compression\ndef lzw_compress(data):\n    dictionary = {bytes([i]): i for i in range(256)}\n    next_code = 256\n\n    w = b\"\"\n    compressed = []\n\n    for value in data:\n        c = bytes([value])\n        wc = w + c\n\n        if wc in dictionary:\n            w = wc\n        else:\n            compressed.append(dictionary[w])\n            dictionary[wc] = next_code\n            next_code += 1\n            w = c\n\n    if w:\n        compressed.append(dictionary[w])\n\n    return compressed\n\n\n# LZW Decompression\ndef lzw_decompress(compressed):\n    if not compressed:\n        return []\n\n    dictionary = {i: bytes([i]) for i in range(256)}\n    next_code = 256\n\n    w = bytes([compressed[0]])\n    result = bytearray(w)\n\n    for code in compressed[1:]:\n        if code in dictionary:\n            entry = dictionary[code]\n        elif code == next_code:\n            entry = w + w[:1]\n        else:\n            raise ValueError(\"Invalid LZW compressed data.\")\n\n        result.extend(entry)\n\n        dictionary[next_code] = w + entry[:1]\n        next_code += 1\n\n        w = entry\n\n    return list(result)\n\n\n# Load grayscale image\nimage_path = \"input_image.jpg\"\n\nimg = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)\n\nif img is None:\n    raise FileNotFoundError(\"Image not found. Check the file path.\")\n\n\n# Convert image to 1D list\npixels = img.flatten().tolist()\n\n\n# Compress\nlzw_encoded = lzw_compress(pixels)\n\n\n# Decompress\nlzw_decoded = lzw_decompress(lzw_encoded)\n\n\n# Verify lossless reconstruction\nif lzw_decoded == pixels:\n    print(\"LZW decompression successful.\")\nelse:\n    print(\"LZW decompression failed.\")\n\n\n# Approximate sizes\noriginal_size = len(pixels)\ncompressed_size = len(lzw_encoded) * 2\n\nratio = original_size / compressed_size if compressed_size != 0 else 0\n\n\n# Display results\nprint(\"Original Size (approx):\", original_size, \"bytes\")\nprint(\"LZW Compressed Size (approx):\", compressed_size, \"bytes\")\nprint(f\"LZW Compression Ratio: {ratio:.2f}:1\")\n\n\n# Display original image\ncv2.imshow(\"Original Image\", img)\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n```",
+  "syntax": [
+    "cv2.imread(filename, flag)",
+    "os.path.getsize(filename)",
+    "cv2.imwrite(filename, image, [cv2.IMWRITE_PNG_COMPRESSION, level])",
+    "cv2.imwrite(filename, image, [cv2.IMWRITE_JPEG_QUALITY, quality])",
+    "rle_encode(data)",
+    "rle_decode(encoded_data)",
+    "lzw_compress(data)",
+    "lzw_decompress(compressed_data)",
+    "compression_ratio = original_size / compressed_size"
+  ],
+  "parameters": [
+    {
+      "key": "method",
+      "label": "Compression method",
+      "type": "select",
+      "default": "jpeg_vs_png",
+      "options": [
+        {
+          "value": "jpeg_vs_png",
+          "label": "JPEG vs PNG size comparison"
+        },
+        {
+          "value": "rle",
+          "label": "Run-Length Encoding (RLE)"
+        },
+        {
+          "value": "lzw",
+          "label": "LZW Compression"
+        }
+      ]
+    },
+    {
+      "key": "jpegQuality",
+      "label": "JPEG quality",
+      "type": "slider",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "default": 90
+    }
+  ],
+  "expectedOutputs": [
+    "Compression Comparison Table",
+    "Reconstructed Image"
+  ],
+  "observation": "Students should record the visual/numerical outcome of running this experiment on their own uploaded image here.",
+  "conclusion": "Thus, lossless image compression was successfully implemented using PNG compression, Run Length Encoding (RLE), and LZW coding. The original and compressed sizes were compared and the compression ratio was calculated. The decompression process was also verified to ensure that the original image data could be reconstructed without loss. ``` ```",
+  "postLab": []
+}

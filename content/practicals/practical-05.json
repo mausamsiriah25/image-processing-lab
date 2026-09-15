@@ -1,0 +1,134 @@
+{
+  "id": "practical-05",
+  "number": 5,
+  "type": "practical",
+  "title": "Spatial Domain Filters",
+  "category": "Filtering",
+  "requiresImage": true,
+  "multiImage": false,
+  "aim": "To write Python programs using OpenCV to apply different spatial domain filters on a given image, including: 1. Averaging Filter 2. Gaussian Filter 3. Median Filter 4. Bilateral Filter",
+  "objectives": [
+    "To understand the concept of spatial domain filtering and its role in enhancing image quality using neighborhood operations.",
+    "To implement various spatial filters such as Averaging, Gaussian, Median, and Bilateral filters using Python and OpenCV.",
+    "To analyze the effects of each filter on image smoothing, noise reduction, and edge preservation.",
+    "To compare the visual output of different filters and select a suitable filtering technique for specific image processing tasks."
+  ],
+  "theory": "Spatial domain filtering is an image processing technique in which pixel values are modified directly using the values of neighboring pixels.\n\nA neighborhood mask such as **3×3, 5×5, or 7×7** is used around each pixel. The filter kernel is moved over the image, and a mathematical operation is performed on the pixels covered by the kernel.\n\n### Low-Pass Filtering\n\nLow-pass filtering is also known as **smoothing filtering**. It reduces high-frequency components in an image and is mainly used for:\n\n* Noise reduction\n* Image smoothing\n* Removing small details\n* Blurring an image\n\nExamples include Averaging, Gaussian, and Median filters.\n\n### High-Pass Filtering\n\nHigh-pass filtering reduces low-frequency components while retaining or enhancing high-frequency components such as edges and fine details.\n\n### 2-D Convolution\n\nConvolution is one of the basic operations in image processing. It uses a small matrix called a **kernel** or **mask**.\n\nThe kernel is moved over the image, and the corresponding pixel values are multiplied by the kernel values and then added together to produce the output pixel.\n\nOpenCV provides the `cv2.filter2D()` function for performing convolution.\n\n### 1. Averaging Filter\n\nThe averaging filter is a **linear smoothing filter**. It replaces the central pixel with the average of the pixels present in the selected neighborhood.\n\nIt is implemented using a normalized box filter.\n\nOpenCV provides:\n\n`cv2.blur()`\n\nand\n\n`cv2.boxFilter()`\n\nA larger kernel produces more smoothing but can also remove more image details.\n\n### 2. Gaussian Filter\n\nThe Gaussian filter is a **linear smoothing filter** that uses a Gaussian kernel. Pixels closer to the center of the kernel receive greater weight.\n\nIt is useful for:\n\n* Noise reduction\n* Image smoothing\n* Preprocessing\n* Reducing unwanted fine details\n\nOpenCV provides:\n\n`cv2.GaussianBlur()`\n\nThe Gaussian kernel size must normally contain positive odd values such as **3×3, 5×5, or 7×7**.\n\n### 3. Median Filter\n\nThe median filter is a **non-linear filter**. It replaces the central pixel with the median value of the pixels in its neighborhood.\n\nIt is particularly effective for removing **salt-and-pepper noise** while preserving edges better than simple averaging.\n\nOpenCV provides:\n\n`cv2.medianBlur()`\n\n### 4. Bilateral Filter\n\nThe bilateral filter is a **non-linear, edge-preserving smoothing filter**.\n\nUnlike ordinary smoothing filters, it considers both:\n\n* Spatial distance between pixels\n* Difference in pixel intensity\n\nTherefore, it can reduce noise while preserving important edges.\n\nOpenCV provides:\n\n`cv2.bilateralFilter()`",
+  "algorithm": [
+    "Averaging Filter",
+    "Gaussian Filter",
+    "Median Filter",
+    "Bilateral Filter"
+  ],
+  "referenceCode": "```python\nimport cv2\nimport numpy as np\n\n# Read the input image\nimg = cv2.imread(\"salad1.png\")\n\nif img is None:\n    raise FileNotFoundError(\"Image not found or path is incorrect.\")\n\n# Apply averaging filter\nblurred = cv2.blur(img, (5, 5))\n\n# Apply box filter\nbox_filtered = cv2.boxFilter(\n    img,\n    -1,\n    (5, 5),\n    normalize=True\n)\n\n# Display original and filtered images\ncombined = np.hstack((img, blurred, box_filtered))\n\ncv2.imshow(\n    \"Original | Averaging Filter | Box Filter\",\n    combined\n)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\nimport numpy as np\n\n# Read the input image\nimg = cv2.imread(\"cat.png\")\n\nif img is None:\n    raise FileNotFoundError(\"Image not found or path is incorrect.\")\n\n# Apply Gaussian filter\ndst = cv2.GaussianBlur(img, (5, 5), 0)\n\n# Display original and filtered images\ncombined = np.hstack((img, dst))\n\ncv2.imshow(\n    \"Original | Gaussian Filter\",\n    combined\n)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\nimport numpy as np\n\n# Read the input image\nimg = cv2.imread(\"salad1.png\")\n\nif img is None:\n    raise FileNotFoundError(\"Image not found or path is incorrect.\")\n\n# Apply median filter\nmedian = cv2.medianBlur(img, 5)\n\n# Display original and filtered images\ncombined = np.hstack((img, median))\n\ncv2.imshow(\n    \"Original | Median Filter\",\n    combined\n)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\nimport numpy as np\n\n# Load the image\nimg = cv2.imread(\"art.png\")\n\nif img is None:\n    raise FileNotFoundError(\"Image not found or path is incorrect.\")\n\n# Apply bilateral filter\ndst = cv2.bilateralFilter(\n    img,\n    9,\n    75,\n    75\n)\n\n# Display original and filtered images\ncombined = np.hstack((img, dst))\n\ncv2.imshow(\n    \"Original | Bilateral Filter\",\n    combined\n)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\nimport numpy as np\n\n# Load image\nimg = cv2.imread(\"salad1.png\")\n\nif img is None:\n    raise FileNotFoundError(\"Image not found or path is incorrect.\")\n\n# Apply filters\naveraging = cv2.blur(img, (5, 5))\ngaussian = cv2.GaussianBlur(img, (5, 5), 0)\nmedian = cv2.medianBlur(img, 5)\nbilateral = cv2.bilateralFilter(img, 9, 75, 75)\n\n# Display results separately\ncv2.imshow(\"Original Image\", img)\ncv2.imshow(\"Averaging Filter\", averaging)\ncv2.imshow(\"Gaussian Filter\", gaussian)\ncv2.imshow(\"Median Filter\", median)\ncv2.imshow(\"Bilateral Filter\", bilateral)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n```",
+  "syntax": [
+    "cv2.blur(image, ksize)",
+    "cv2.boxFilter(src, ddepth, ksize, normalize=True)",
+    "cv2.GaussianBlur(src, ksize, sigmaX)",
+    "cv2.medianBlur(image, ksize)",
+    "cv2.bilateralFilter(image, d, sigmaColor, sigmaSpace)",
+    "cv2.imshow(window_name, image)",
+    "cv2.waitKey(0)",
+    "cv2.destroyAllWindows()"
+  ],
+  "parameters": [
+    {
+      "key": "filter",
+      "label": "Filter",
+      "type": "select",
+      "default": "gaussian",
+      "options": [
+        {
+          "value": "averaging",
+          "label": "Averaging Filter"
+        },
+        {
+          "value": "box",
+          "label": "Box Filter"
+        },
+        {
+          "value": "gaussian",
+          "label": "Gaussian Filter"
+        },
+        {
+          "value": "median",
+          "label": "Median Filter"
+        },
+        {
+          "value": "bilateral",
+          "label": "Bilateral Filter"
+        },
+        {
+          "value": "all",
+          "label": "Compare all filters"
+        }
+      ]
+    },
+    {
+      "key": "kernelSize",
+      "label": "Kernel size",
+      "type": "select",
+      "default": 5,
+      "options": [
+        {
+          "value": "3",
+          "label": "3x3"
+        },
+        {
+          "value": "5",
+          "label": "5x5"
+        },
+        {
+          "value": "7",
+          "label": "7x7"
+        }
+      ]
+    },
+    {
+      "key": "sigmaX",
+      "label": "Sigma (Gaussian)",
+      "type": "slider",
+      "min": 0,
+      "max": 10,
+      "step": 0.5,
+      "default": 0
+    },
+    {
+      "key": "diameter",
+      "label": "Diameter (Bilateral)",
+      "type": "slider",
+      "min": 3,
+      "max": 25,
+      "step": 1,
+      "default": 9
+    },
+    {
+      "key": "sigmaColor",
+      "label": "Sigma Color (Bilateral)",
+      "type": "slider",
+      "min": 10,
+      "max": 150,
+      "step": 5,
+      "default": 75
+    },
+    {
+      "key": "sigmaSpace",
+      "label": "Sigma Space (Bilateral)",
+      "type": "slider",
+      "min": 10,
+      "max": 150,
+      "step": 5,
+      "default": 75
+    }
+  ],
+  "expectedOutputs": [
+    "Averaging",
+    "Box",
+    "Gaussian",
+    "Median",
+    "Bilateral"
+  ],
+  "observation": "Students should record the visual/numerical outcome of running this experiment on their own uploaded image here.",
+  "conclusion": "The different spatial domain filtering techniques were successfully implemented using Python and OpenCV. Averaging and Gaussian filters were used for image smoothing and noise reduction, while the Median filter was useful for removing noise such as salt-and-pepper noise. The Bilateral filter reduced noise while preserving important edges. Thus, the practical demonstrated the use of different spatial filters and their effects on image quality. ``` ```",
+  "postLab": []
+}

@@ -1,0 +1,102 @@
+{
+  "id": "practical-06",
+  "number": 6,
+  "type": "practical",
+  "title": "Image Restoration — Inpainting & Denoising",
+  "category": "Restoration",
+  "requiresImage": true,
+  "multiImage": false,
+  "aim": "To implement image restoration by removing damaged parts of an image using **inpainting methods**. The experiment uses two approaches — **Telea method** and **Navier-Stokes (NS) method** — to restore damaged regions and make the image appear natural.",
+  "objectives": [
+    "To study the concept of image restoration and its importance in recovering degraded images.",
+    "To understand and apply noise models such as Gaussian noise and Salt & Pepper noise in digital images.",
+    "To create and use a mask for selecting damaged or unwanted regions of an image for restoration.",
+    "To implement inpainting techniques such as Telea and Navier-Stokes methods for filling missing or corrupted areas.",
+    "To apply and compare denoising filters such as Gaussian filter, Median filter, and Non-local Means for noise removal and image quality improvement."
+  ],
+  "theory": "### Image Restoration\n\nImage restoration is the process of recovering a degraded image to its original or desired state by removing or reducing noise, blur, scratches, or other distortions.\n\nThe basic image restoration process involves:\n\n1. **Degradation Identification:** Identifying the type of degradation such as noise, blur, or scratches.\n2. **Degradation Modeling:** Understanding how the original image was affected.\n3. **Restoration:** Applying an appropriate restoration technique to recover the image.\n\nRestoration techniques can be performed in the spatial domain or frequency domain.\n\n### Image Inpainting\n\nImage inpainting is the process of reconstructing damaged, missing, scratched, or unwanted portions of an image.\n\nA **mask** is used to identify the damaged region. In the mask:\n\n* Black pixels generally represent unaffected regions.\n* White pixels represent regions that need to be restored.\n\nOpenCV provides the `cv2.inpaint()` function for image inpainting.\n\n### Telea Method\n\nThe Telea method is based on the **Fast Marching Method (FMM)**. It starts from the boundary of the damaged region and progressively fills the unknown pixels.\n\nIt gives greater importance to nearby pixels and boundary pixels while estimating the missing information.\n\nIn OpenCV, it is specified as:\n\n`cv2.INPAINT_TELEA`\n\n### Navier-Stokes Method\n\nThe Navier-Stokes method is inspired by fluid dynamics and partial differential equations.\n\nIt propagates information from known regions toward unknown regions while maintaining the structure and intensity patterns of the surrounding image.\n\nIn OpenCV, it is specified as:\n\n`cv2.INPAINT_NS`\n\n### Noise Removal\n\nNoise is an unwanted variation in pixel intensity that reduces image quality.\n\nCommon noise types include:\n\n* **Gaussian Noise:** Random noise following a Gaussian distribution.\n* **Salt & Pepper Noise:** Appears as random white and black pixels.\n\nCommon denoising techniques include:\n\n* Gaussian filtering\n* Median filtering\n* Non-local Means denoising\n\n### Gaussian Filtering\n\nGaussian filtering smooths an image using a Gaussian kernel. It is useful for reducing Gaussian-type noise.\n\n### Median Filtering\n\nMedian filtering replaces a pixel with the median value of its neighborhood. It is particularly effective for removing Salt & Pepper noise.\n\n### Non-local Means Denoising\n\nNon-local Means denoising compares similar regions of an image and uses their information to reduce noise while preserving important image details.",
+  "algorithm": [
+    "To study the concept of image restoration and its importance in recovering degraded images.",
+    "To understand and apply noise models such as Gaussian noise and Salt & Pepper noise in digital images.",
+    "To create and use a mask for selecting damaged or unwanted regions of an image for restoration.",
+    "To implement inpainting techniques such as Telea and Navier-Stokes methods for filling missing or corrupted areas.",
+    "To apply and compare denoising filters such as Gaussian filter, Median filter, and Non-local Means for noise removal and image quality improvement."
+  ],
+  "referenceCode": "```python\nimport cv2\nimport numpy as np\n\n# Read the damaged image\ndamaged_img = cv2.imread(\"cat_damaged.png\")\n\nif damaged_img is None:\n    raise FileNotFoundError(\"Damaged image not found.\")\n\n# Create a binary mask\nheight, width = damaged_img.shape[:2]\nmask = np.zeros((height, width), dtype=np.uint8)\n\n# Detect black/damaged pixels\nfor i in range(height):\n    for j in range(width):\n        if np.sum(damaged_img[i, j]) == 0:\n            mask[i, j] = 255\n\n# Save generated mask\ncv2.imwrite(\"generated_mask.png\", mask)\n\n# Inpainting using Telea method\nrestored_telea = cv2.inpaint(\n    damaged_img,\n    mask,\n    3,\n    cv2.INPAINT_TELEA\n)\n\n# Read predefined mask\nmask_predefined = cv2.imread(\n    \"cat_mask.png\",\n    cv2.IMREAD_GRAYSCALE\n)\n\nif mask_predefined is None:\n    raise FileNotFoundError(\"Predefined mask not found.\")\n\n# Inpainting using Navier-Stokes method\nrestored_ns = cv2.inpaint(\n    damaged_img,\n    mask_predefined,\n    3,\n    cv2.INPAINT_NS\n)\n\n# Save restored images\ncv2.imwrite(\"restored_telea.png\", restored_telea)\ncv2.imwrite(\"restored_ns.png\", restored_ns)\n\n# Display results\ncv2.imshow(\"Original Damaged Image\", damaged_img)\ncv2.imshow(\"Generated Mask\", mask)\ncv2.imshow(\"Restored using Telea\", restored_telea)\ncv2.imshow(\"Predefined Mask\", mask_predefined)\ncv2.imshow(\"Restored using Navier-Stokes\", restored_ns)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Read damaged image\ndamaged_img = cv2.imread(\"cat_damaged.png\")\n\nif damaged_img is None:\n    raise FileNotFoundError(\"Damaged image not found.\")\n\n# Create automatic mask\nheight, width = damaged_img.shape[:2]\nmask_auto = np.zeros((height, width), dtype=np.uint8)\n\nfor i in range(height):\n    for j in range(width):\n        if np.sum(damaged_img[i, j]) == 0:\n            mask_auto[i, j] = 255\n\n# Restore using Telea\nrestored_telea = cv2.inpaint(\n    damaged_img,\n    mask_auto,\n    3,\n    cv2.INPAINT_TELEA\n)\n\n# Load predefined mask\nmask_predefined = cv2.imread(\n    \"cat_mask.png\",\n    cv2.IMREAD_GRAYSCALE\n)\n\nif mask_predefined is None:\n    raise FileNotFoundError(\"Predefined mask not found.\")\n\n# Restore using Navier-Stokes\nrestored_ns = cv2.inpaint(\n    damaged_img,\n    mask_predefined,\n    3,\n    cv2.INPAINT_NS\n)\n\n# Convert BGR image to RGB\ndamaged_rgb = cv2.cvtColor(\n    damaged_img,\n    cv2.COLOR_BGR2RGB\n)\n\ntelea_rgb = cv2.cvtColor(\n    restored_telea,\n    cv2.COLOR_BGR2RGB\n)\n\nns_rgb = cv2.cvtColor(\n    restored_ns,\n    cv2.COLOR_BGR2RGB\n)\n\n# Display results\nimages = [\n    damaged_rgb,\n    mask_auto,\n    telea_rgb,\n    ns_rgb\n]\n\ntitles = [\n    \"Original Damaged\",\n    \"Generated Mask\",\n    \"Restored (Telea)\",\n    \"Restored (Navier-Stokes)\"\n]\n\nplt.figure(figsize=(12, 6))\n\nfor i in range(4):\n    plt.subplot(2, 2, i + 1)\n\n    if len(images[i].shape) == 2:\n        plt.imshow(images[i], cmap=\"gray\")\n    else:\n        plt.imshow(images[i])\n\n    plt.title(titles[i])\n    plt.axis(\"off\")\n\nplt.tight_layout()\nplt.show()\n\nimport cv2\nimport matplotlib.pyplot as plt\n\n# Read noisy image\nimg = cv2.imread(\n    \"Noisy-image-Gaussian-noise-with-mean-and-variance-0005.png\",\n    cv2.IMREAD_GRAYSCALE\n)\n\nif img is None:\n    raise FileNotFoundError(\"Noisy image not found.\")\n\n# Apply Gaussian Blur\nrestored = cv2.GaussianBlur(\n    img,\n    (5, 5),\n    0\n)\n\n# Display results\nplt.subplot(1, 2, 1)\nplt.imshow(img, cmap=\"gray\")\nplt.title(\"Gaussian Noisy Image\")\nplt.axis(\"off\")\n\nplt.subplot(1, 2, 2)\nplt.imshow(restored, cmap=\"gray\")\nplt.title(\"Restored using Gaussian Blur\")\nplt.axis(\"off\")\n\nplt.tight_layout()\nplt.show()\n\nimport cv2\nimport matplotlib.pyplot as plt\n\n# Read noisy image\nimg = cv2.imread(\n    \"noisy_salt_pepper.png\",\n    cv2.IMREAD_GRAYSCALE\n)\n\nif img is None:\n    raise FileNotFoundError(\"Noisy image not found.\")\n\n# Apply median filter\nrestored = cv2.medianBlur(\n    img,\n    5\n)\n\n# Display results\nplt.subplot(1, 2, 1)\nplt.imshow(img, cmap=\"gray\")\nplt.title(\"Salt & Pepper Noise\")\nplt.axis(\"off\")\n\nplt.subplot(1, 2, 2)\nplt.imshow(restored, cmap=\"gray\")\nplt.title(\"Restored using Median Filter\")\nplt.axis(\"off\")\n\nplt.tight_layout()\nplt.show()\n\nimport cv2\nimport matplotlib.pyplot as plt\n\n# Read noisy image\nimg = cv2.imread(\n    \"noisy_image.png\",\n    cv2.IMREAD_GRAYSCALE\n)\n\nif img is None:\n    raise FileNotFoundError(\"Noisy image not found.\")\n\n# Apply Non-local Means Denoising\nrestored = cv2.fastNlMeansDenoising(\n    img,\n    None,\n    30,\n    7,\n    21\n)\n\n# Display results\nplt.subplot(1, 2, 1)\nplt.imshow(img, cmap=\"gray\")\nplt.title(\"Noisy Image\")\nplt.axis(\"off\")\n\nplt.subplot(1, 2, 2)\nplt.imshow(restored, cmap=\"gray\")\nplt.title(\"Restored using Non-local Means\")\nplt.axis(\"off\")\n\nplt.tight_layout()\nplt.show()\n\nimport cv2\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Read scratched/damaged image\nimg = cv2.imread(\n    \"scratched.png\",\n    cv2.IMREAD_GRAYSCALE\n)\n\nif img is None:\n    raise FileNotFoundError(\"Scratched image not found.\")\n\n# Create mask\nmask = np.zeros(img.shape, dtype=np.uint8)\n\n# Mark damaged region as white\nmask[50:80, 50:150] = 255\n\n# Apply Telea inpainting\nrestored = cv2.inpaint(\n    img,\n    mask,\n    3,\n    cv2.INPAINT_TELEA\n)\n\n# Display results\nplt.subplot(1, 3, 1)\nplt.imshow(img, cmap=\"gray\")\nplt.title(\"Damaged Image\")\nplt.axis(\"off\")\n\nplt.subplot(1, 3, 2)\nplt.imshow(mask, cmap=\"gray\")\nplt.title(\"Mask\")\nplt.axis(\"off\")\n\nplt.subplot(1, 3, 3)\nplt.imshow(restored, cmap=\"gray\")\nplt.title(\"Restored Image\")\nplt.axis(\"off\")\n\nplt.tight_layout()\nplt.show()\n\nimport cv2\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Create base grayscale image\nimg = np.ones((256, 256), dtype=np.uint8) * 127\n\n# Draw a circle\ncv2.circle(\n    img,\n    (128, 128),\n    60,\n    200,\n    -1\n)\n\n# Generate Gaussian noise\nnoise = np.random.normal(\n    0,\n    25,\n    img.shape\n).astype(np.int16)\n\n# Add noise safely\nnoisy = img.astype(np.int16) + noise\ngaussian_noisy = np.clip(\n    noisy,\n    0,\n    255\n).astype(np.uint8)\n\n# Save image\ncv2.imwrite(\n    \"noisy_gaussian.png\",\n    gaussian_noisy\n)\n\n# Display\nplt.imshow(\n    gaussian_noisy,\n    cmap=\"gray\"\n)\nplt.title(\"Gaussian Noisy Image\")\nplt.axis(\"off\")\nplt.show()\n\nimport cv2\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Create base grayscale image\nimg = np.ones((256, 256), dtype=np.uint8) * 127\n\n# Draw rectangle\ncv2.rectangle(\n    img,\n    (60, 60),\n    (200, 200),\n    200,\n    -1\n)\n\n# Copy original image\ns_p_img = img.copy()\n\n# Number of noise pixels\nnum_noise = 2000\n\n# Generate random coordinates\nrows = np.random.randint(\n    0,\n    img.shape[0],\n    num_noise\n)\n\ncols = np.random.randint(\n    0,\n    img.shape[1],\n    num_noise\n)\n\n# Add salt noise\ns_p_img[rows, cols] = 255\n\n# Generate coordinates for pepper noise\nrows = np.random.randint(\n    0,\n    img.shape[0],\n    num_noise\n)\n\ncols = np.random.randint(\n    0,\n    img.shape[1],\n    num_noise\n)\n\n# Add pepper noise\ns_p_img[rows, cols] = 0\n\n# Save image\ncv2.imwrite(\n    \"noisy_salt_pepper.png\",\n    s_p_img\n)\n\n# Display\nplt.imshow(\n    s_p_img,\n    cmap=\"gray\"\n)\nplt.title(\"Salt & Pepper Noise\")\nplt.axis(\"off\")\nplt.show()\n\nimport cv2\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Create base image\nimg = np.ones((256, 256), dtype=np.uint8) * 180\n\n# Add text\ncv2.putText(\n    img,\n    \"TEST\",\n    (60, 150),\n    cv2.FONT_HERSHEY_SIMPLEX,\n    2,\n    50,\n    5\n)\n\n# Generate random noise\nnoise = np.random.randint(\n    0,\n    50,\n    img.shape,\n    dtype=np.uint8\n)\n\n# Add noise\nnoisy_img = cv2.add(img, noise)\n\n# Save image\ncv2.imwrite(\n    \"noisy_image.png\",\n    noisy_img\n)\n\n# Display\nplt.imshow(\n    noisy_img,\n    cmap=\"gray\"\n)\nplt.title(\"General Noisy Image\")\nplt.axis(\"off\")\nplt.show()\n\nimport cv2\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Create base image\nimg = np.ones(\n    (256, 256),\n    dtype=np.uint8\n) * 200\n\n# Add text\ncv2.putText(\n    img,\n    \"CAT\",\n    (70, 140),\n    cv2.FONT_HERSHEY_SIMPLEX,\n    2,\n    50,\n    5\n)\n\n# Create scratched image\nscratched = img.copy()\n\n# Add scratches\ncv2.line(\n    scratched,\n    (30, 100),\n    (220, 120),\n    0,\n    3\n)\n\ncv2.line(\n    scratched,\n    (100, 30),\n    (120, 220),\n    0,\n    3\n)\n\n# Save scratched image\ncv2.imwrite(\n    \"scratched.png\",\n    scratched\n)\n\n# Display\nplt.imshow(\n    scratched,\n    cmap=\"gray\"\n)\nplt.title(\"Scratched Image\")\nplt.axis(\"off\")\nplt.show()\n```",
+  "syntax": [
+    "cv2.imread(filename, flag)",
+    "mask = np.zeros(image.shape[:2], dtype=np.uint8)\nmask[y1:y2, x1:x2] = 255",
+    "cv2.inpaint(src, inpaintMask, inpaintRadius, flags)",
+    "cv2.inpaint(image, mask, 3, cv2.INPAINT_TELEA)",
+    "cv2.inpaint(image, mask, 3, cv2.INPAINT_NS)",
+    "cv2.GaussianBlur(image, (5, 5), 0)",
+    "cv2.medianBlur(image, 5)",
+    "cv2.fastNlMeansDenoising(image, None, h, templateWindowSize, searchWindowSize)"
+  ],
+  "parameters": [
+    {
+      "key": "mode",
+      "label": "Mode",
+      "type": "select",
+      "default": "inpaint_telea",
+      "options": [
+        {
+          "value": "inpaint_telea",
+          "label": "Inpainting — Telea"
+        },
+        {
+          "value": "inpaint_ns",
+          "label": "Inpainting — Navier-Stokes"
+        },
+        {
+          "value": "denoise_gaussian",
+          "label": "Denoise — Gaussian Blur"
+        },
+        {
+          "value": "denoise_median",
+          "label": "Denoise — Median Filter"
+        },
+        {
+          "value": "denoise_nlm",
+          "label": "Denoise — Non-local Means"
+        }
+      ]
+    },
+    {
+      "key": "maskThreshold",
+      "label": "Auto-mask threshold",
+      "type": "slider",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 30
+    },
+    {
+      "key": "inpaintRadius",
+      "label": "Inpaint radius",
+      "type": "slider",
+      "min": 1,
+      "max": 15,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "key": "nlmH",
+      "label": "Filter strength h (NLM)",
+      "type": "slider",
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "default": 10
+    }
+  ],
+  "expectedOutputs": [
+    "Damage Mask",
+    "Restored (Telea)",
+    "Restored (Navier-Stokes)",
+    "Denoised"
+  ],
+  "observation": "Students should record the visual/numerical outcome of running this experiment on their own uploaded image here.",
+  "conclusion": "Image restoration and inpainting techniques were successfully implemented using Python and OpenCV. Gaussian filtering, Median filtering, and Non-local Means were used for noise reduction. Masks were created to identify damaged regions, and the **Telea** and **Navier-Stokes** algorithms were successfully applied to restore damaged areas. The practical demonstrated how image restoration can improve the quality and appearance of degraded images. ``` ```",
+  "postLab": []
+}

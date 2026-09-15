@@ -1,0 +1,160 @@
+{
+  "id": "practical-04",
+  "number": 4,
+  "type": "practical",
+  "title": "Spatial Domain Image Enhancement",
+  "category": "Image Enhancement",
+  "requiresImage": true,
+  "multiImage": false,
+  "aim": "To study and implement image enhancement techniques in the spatial domain, including **Histogram Equalization** for contrast improvement, **Spatial Filtering** such as smoothing and sharpening to reduce noise and enhance important features, and **Thresholding techniques** to segment grayscale images based on pixel intensity.",
+  "objectives": [
+    "To understand the concept of histogram equalization and its role in improving image contrast.",
+    "To apply spatial domain filters such as smoothing and sharpening to enhance image features.",
+    "To analyze the effects of different spatial filters on image quality in terms of noise reduction and edge enhancement.",
+    "To implement various thresholding techniques to segment grayscale images based on intensity levels."
+  ],
+  "theory": "In the spatial domain, image enhancement techniques directly manipulate the intensity values or pixel values of an image. An image can be represented as a two-dimensional function **f(x, y)**, where enhancement operations are applied directly to the pixels.\n\n### 1. Histogram Processing\n\n#### Histogram Equalization\n\nHistogram equalization is a technique used to improve the global contrast of an image. It redistributes the intensity values so that the frequently occurring intensity levels are spread over a wider range.\n\nIt is particularly useful for dark or low-contrast grayscale images. In OpenCV, histogram equalization can be performed using:\n\n`cv2.equalizeHist()`\n\nThe input image must be a grayscale image.\n\n### 2. Spatial Filtering\n\nSpatial filtering operates directly on the pixels of an image using a neighborhood around each pixel.\n\n#### a) Smoothing / Low-Pass Filtering\n\nSmoothing filters are mainly used to reduce noise and unwanted variations in an image.\n\nCommon smoothing filters are:\n\n* **Mean Filter:** Replaces each pixel with the average of neighboring pixels.\n* **Gaussian Filter:** Gives different weights to neighboring pixels according to a Gaussian distribution.\n* **Median Filter:** Replaces each pixel with the median value of its neighborhood and is particularly useful for salt-and-pepper noise.\n\n#### b) Sharpening / High-Pass Filtering\n\nSharpening enhances edges and fine details in an image.\n\nCommon sharpening methods include:\n\n* Laplacian filtering\n* Unsharp masking\n* Custom sharpening kernels\n\nThe `cv2.filter2D()` function can be used with a suitable kernel for sharpening an image.\n\n### 3. Brightness and Contrast Adjustment\n\nBrightness and contrast can be adjusted by modifying pixel intensity values.\n\nThe general transformation is:\n\n**g(i,j) = α × f(i,j) + β**\n\nwhere:\n\n* **α** controls contrast.\n* **β** controls brightness.\n* **f(i,j)** is the original pixel value.\n* **g(i,j)** is the modified pixel value.\n\nOpenCV provides `cv2.addWeighted()` and `cv2.convertScaleAbs()` for brightness and contrast adjustment.\n\n### 4. Negative Image\n\nA negative image is created by reversing the intensity values of an image.\n\nFor an 8-bit grayscale image:\n\n**Negative = 255 − Original**\n\nThus, dark pixels become bright and bright pixels become dark.\n\n### 5. Noise Removal\n\nNoise reduction removes unwanted variations or artifacts from an image. Median and Gaussian filters are commonly used for noise reduction.\n\nThe median filter replaces each pixel with the median of the surrounding neighborhood and is effective for removing salt-and-pepper noise while preserving edges better than simple averaging.\n\n### 6. Thresholding\n\nThresholding is an image segmentation technique used to separate objects from their background based on pixel intensity.\n\nIn OpenCV, thresholding is performed using:\n\n`cv2.threshold(source, thresholdValue, maxVal, thresholdingTechnique)`\n\nCommon thresholding techniques are:\n\n* **THRESH_BINARY:** Pixels above the threshold become 255; others become 0.\n* **THRESH_BINARY_INV:** Reverse of binary thresholding.\n* **THRESH_TRUNC:** Values above the threshold are set to the threshold value.\n* **THRESH_TOZERO:** Values below the threshold are set to 0.\n* **THRESH_TOZERO_INV:** Reverse of the To-Zero operation.",
+  "algorithm": [
+    "To understand the concept of histogram equalization and its role in improving image contrast.",
+    "To apply spatial domain filters such as smoothing and sharpening to enhance image features.",
+    "To analyze the effects of different spatial filters on image quality in terms of noise reduction and edge enhancement.",
+    "To implement various thresholding techniques to segment grayscale images based on intensity levels."
+  ],
+  "referenceCode": "```python\nimport cv2\nimport numpy as np\n\n# Read the image in grayscale\nimg = cv2.imread(\"neg.png\", cv2.IMREAD_GRAYSCALE)\n\nif img is None:\n    raise FileNotFoundError(\"Image not found.\")\n\n# Create negative image\nnegative = 255 - img\n\n# Display original and negative images side-by-side\ncombined = np.hstack((img, negative))\n\ncv2.imshow(\"Original (Left) vs Negative (Right)\", combined)\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\nimport matplotlib.pyplot as plt\nimport numpy as np\n\n# Load image\nimage = cv2.imread(\"tomato.jpg\")\n\nif image is None:\n    raise FileNotFoundError(\"Image not found.\")\n\n# Adjust brightness and contrast\nbrightness = 10\ncontrast = 2.3\n\nimage2 = cv2.addWeighted(\n    image, contrast,\n    np.zeros(image.shape, image.dtype), 0,\n    brightness\n)\n\n# Save image\ncv2.imwrite(\"modified_image.jpg\", image2)\n\n# Convert BGR to RGB for Matplotlib\nimage_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)\nimage2_rgb = cv2.cvtColor(image2, cv2.COLOR_BGR2RGB)\n\n# Display\nplt.subplot(1, 2, 1)\nplt.title(\"Original\")\nplt.imshow(image_rgb)\nplt.axis(\"off\")\n\nplt.subplot(1, 2, 2)\nplt.title(\"Brightness & Contrast\")\nplt.imshow(image2_rgb)\nplt.axis(\"off\")\n\nplt.tight_layout()\nplt.show()\n\nimport cv2\nimport matplotlib.pyplot as plt\n\n# Load image\nimage = cv2.imread(\"GFG.jpeg\")\n\nif image is None:\n    raise FileNotFoundError(\"Image not found.\")\n\n# Control contrast and brightness\nalpha = 1.5\nbeta = 50\n\nimage2 = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)\n\n# Save image\ncv2.imwrite(\"Brightness_contrast.jpg\", image2)\n\n# Convert BGR to RGB\nimage_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)\nimage2_rgb = cv2.cvtColor(image2, cv2.COLOR_BGR2RGB)\n\n# Display\nplt.subplot(1, 2, 1)\nplt.title(\"Original\")\nplt.imshow(image_rgb)\nplt.axis(\"off\")\n\nplt.subplot(1, 2, 2)\nplt.title(\"Brightness & Contrast\")\nplt.imshow(image2_rgb)\nplt.axis(\"off\")\n\nplt.tight_layout()\nplt.show()\n\nimport cv2\nimport matplotlib.pyplot as plt\nimport numpy as np\n\n# Load image\nimage = cv2.imread(\"tomato.jpeg\")\n\nif image is None:\n    raise FileNotFoundError(\"Image not found.\")\n\n# Create sharpening kernel\nkernel = np.array([\n    [0, -1, 0],\n    [-1, 5, -1],\n    [0, -1, 0]\n])\n\n# Sharpen image\nsharpened_image = cv2.filter2D(image, -1, kernel)\n\n# Save image\ncv2.imwrite(\"sharpened_image.jpg\", sharpened_image)\n\n# Convert BGR to RGB\nimage_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)\nsharpened_rgb = cv2.cvtColor(sharpened_image, cv2.COLOR_BGR2RGB)\n\n# Display\nplt.subplot(1, 2, 1)\nplt.title(\"Original\")\nplt.imshow(image_rgb)\nplt.axis(\"off\")\n\nplt.subplot(1, 2, 2)\nplt.title(\"Sharpening\")\nplt.imshow(sharpened_rgb)\nplt.axis(\"off\")\n\nplt.tight_layout()\nplt.show()\n\nimport cv2\nimport matplotlib.pyplot as plt\nimport numpy as np\n\n# Load image in grayscale\nimage = cv2.imread(\"tomato.png\", cv2.IMREAD_GRAYSCALE)\n\nif image is None:\n    raise FileNotFoundError(\"Image not found.\")\n\n# Apply Laplacian operator\nlaplacian = cv2.Laplacian(image, cv2.CV_64F)\n\n# Convert result to 8-bit\nlaplacian = cv2.convertScaleAbs(laplacian)\n\n# Create sharpened image\nsharpened_image = cv2.addWeighted(image, 1.0, laplacian, 1.0, 0)\n\n# Save image\ncv2.imwrite(\"Laplacian_sharpened_image.jpg\", sharpened_image)\n\n# Display\nplt.subplot(1, 2, 1)\nplt.title(\"Original\")\nplt.imshow(image, cmap=\"gray\")\nplt.axis(\"off\")\n\nplt.subplot(1, 2, 2)\nplt.title(\"Laplacian Sharpening\")\nplt.imshow(sharpened_image, cmap=\"gray\")\nplt.axis(\"off\")\n\nplt.tight_layout()\nplt.show()\n\nimport cv2\nimport matplotlib.pyplot as plt\n\n# Load image\nimage = cv2.imread(\"tomato.png\")\n\nif image is None:\n    raise FileNotFoundError(\"Image not found.\")\n\n# Remove noise using median filter\nfiltered_image = cv2.medianBlur(image, 11)\n\n# Save image\ncv2.imwrite(\"Median_Blur.jpg\", filtered_image)\n\n# Convert BGR to RGB\nimage_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)\nfiltered_rgb = cv2.cvtColor(filtered_image, cv2.COLOR_BGR2RGB)\n\n# Display\nplt.subplot(1, 2, 1)\nplt.title(\"Original\")\nplt.imshow(image_rgb)\nplt.axis(\"off\")\n\nplt.subplot(1, 2, 2)\nplt.title(\"Median Blur\")\nplt.imshow(filtered_rgb)\nplt.axis(\"off\")\n\nplt.tight_layout()\nplt.show()\n\nimport cv2\nimport numpy as np\n\n# Read image in grayscale\nimg = cv2.imread(\"tomato.png\", cv2.IMREAD_GRAYSCALE)\n\nif img is None:\n    raise FileNotFoundError(\"Image not found.\")\n\n# Histogram equalization\nequ = cv2.equalizeHist(img)\n\n# Stack original and equalized images\nres = np.hstack((img, equ))\n\n# Display\ncv2.imshow(\"Original (Left) vs Equalized (Right)\", res)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Read image in grayscale\nimg = cv2.imread(\"tomato.png\", cv2.IMREAD_GRAYSCALE)\n\nif img is None:\n    raise FileNotFoundError(\"Image not found.\")\n\n# Histogram equalization\nequ = cv2.equalizeHist(img)\n\n# Stack original and equalized images\nres = np.hstack((img, equ))\n\n# Display images\ncv2.imshow(\"Original vs Equalized\", res)\n\n# Plot histograms\nplt.figure(figsize=(10, 5))\n\n# Original histogram\nplt.subplot(1, 2, 1)\nplt.hist(img.ravel(), 256, [0, 256])\nplt.title(\"Original Histogram\")\nplt.xlabel(\"Pixel Intensity\")\nplt.ylabel(\"Frequency\")\n\n# Equalized histogram\nplt.subplot(1, 2, 2)\nplt.hist(equ.ravel(), 256, [0, 256])\nplt.title(\"Equalized Histogram\")\nplt.xlabel(\"Pixel Intensity\")\nplt.ylabel(\"Frequency\")\n\nplt.tight_layout()\nplt.show()\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\n\n# Load image\nimage1 = cv2.imread(\"tomato.png\")\n\nif image1 is None:\n    raise FileNotFoundError(\"Image not found.\")\n\n# Convert image to grayscale\nimg = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)\n\n# Apply different thresholding techniques\nret, thresh1 = cv2.threshold(\n    img, 120, 255, cv2.THRESH_BINARY\n)\n\nret, thresh2 = cv2.threshold(\n    img, 120, 255, cv2.THRESH_BINARY_INV\n)\n\nret, thresh3 = cv2.threshold(\n    img, 120, 255, cv2.THRESH_TRUNC\n)\n\nret, thresh4 = cv2.threshold(\n    img, 120, 255, cv2.THRESH_TOZERO\n)\n\nret, thresh5 = cv2.threshold(\n    img, 120, 255, cv2.THRESH_TOZERO_INV\n)\n\n# Display results\ncv2.imshow(\"Binary Threshold\", thresh1)\ncv2.imshow(\"Binary Threshold Inverted\", thresh2)\ncv2.imshow(\"Truncated Threshold\", thresh3)\ncv2.imshow(\"Set to Zero\", thresh4)\ncv2.imshow(\"Set to Zero Inverted\", thresh5)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n```",
+  "syntax": [
+    "# Read an image\ncv2.imread(filename, flag)\n\n# Display an image\ncv2.imshow(window_name, image)\n\n# Negative image\nnegative = 255 - img\n\n# Brightness and contrast\ncv2.addWeighted(src1, alpha, src2, beta, gamma)\n\n# Brightness and contrast using scaling\ncv2.convertScaleAbs(image, alpha=alpha, beta=beta)\n\n# Sharpening\ncv2.filter2D(src, ddepth, kernel)\n\n# Laplacian filtering\ncv2.Laplacian(src, ddepth)\n\n# Median filtering\ncv2.medianBlur(src, kernel_size)\n\n# Histogram equalization\ncv2.equalizeHist(src)\n\n# Thresholding\ncv2.threshold(source, thresholdValue, maxVal, thresholdingTechnique)\n\n# Wait for a key\ncv2.waitKey(0)\n\n# Close windows\ncv2.destroyAllWindows()"
+  ],
+  "parameters": [
+    {
+      "key": "operation",
+      "label": "Enhancement Technique",
+      "type": "select",
+      "default": "histogram_equalization",
+      "options": [
+        {
+          "value": "negative",
+          "label": "Negative Image"
+        },
+        {
+          "value": "brightness_contrast",
+          "label": "Brightness & Contrast"
+        },
+        {
+          "value": "brightness_contrast_scaling",
+          "label": "Brightness & Contrast (manual scaling)"
+        },
+        {
+          "value": "sharpen",
+          "label": "Sharpening"
+        },
+        {
+          "value": "laplacian",
+          "label": "Laplacian Filtering"
+        },
+        {
+          "value": "median",
+          "label": "Median Filtering"
+        },
+        {
+          "value": "histogram_equalization",
+          "label": "Histogram Equalization"
+        },
+        {
+          "value": "threshold",
+          "label": "Thresholding"
+        }
+      ]
+    },
+    {
+      "key": "alpha",
+      "label": "Contrast (alpha)",
+      "type": "slider",
+      "min": 0.5,
+      "max": 3,
+      "step": 0.1,
+      "default": 1.2
+    },
+    {
+      "key": "beta",
+      "label": "Brightness (beta)",
+      "type": "slider",
+      "min": -100,
+      "max": 100,
+      "step": 1,
+      "default": 30
+    },
+    {
+      "key": "medianKernel",
+      "label": "Median kernel size",
+      "type": "select",
+      "default": 5,
+      "options": [
+        {
+          "value": "3",
+          "label": "3x3"
+        },
+        {
+          "value": "5",
+          "label": "5x5"
+        },
+        {
+          "value": "7",
+          "label": "7x7"
+        }
+      ]
+    },
+    {
+      "key": "thresholdValue",
+      "label": "Threshold value",
+      "type": "slider",
+      "min": 0,
+      "max": 255,
+      "step": 1,
+      "default": 120
+    },
+    {
+      "key": "thresholdType",
+      "label": "Threshold type",
+      "type": "select",
+      "default": "all",
+      "options": [
+        {
+          "value": "all",
+          "label": "All 5 types"
+        },
+        {
+          "value": "binary",
+          "label": "Binary"
+        },
+        {
+          "value": "binary_inv",
+          "label": "Binary Inverted"
+        },
+        {
+          "value": "trunc",
+          "label": "Truncate"
+        },
+        {
+          "value": "tozero",
+          "label": "To Zero"
+        },
+        {
+          "value": "tozero_inv",
+          "label": "To Zero Inverted"
+        }
+      ]
+    }
+  ],
+  "expectedOutputs": [
+    "Negative",
+    "Brightness/Contrast",
+    "Sharpened",
+    "Laplacian",
+    "Median Filtered",
+    "Histogram Equalized",
+    "Thresholded"
+  ],
+  "observation": "Students should record the visual/numerical outcome of running this experiment on their own uploaded image here.",
+  "conclusion": "The spatial domain image enhancement techniques were successfully studied and implemented using OpenCV and Python. Histogram equalization was used to improve image contrast, while brightness and contrast adjustment enhanced image appearance. Smoothing and median filtering were used for noise reduction, and sharpening techniques were used to enhance edges and details. Different thresholding techniques were also implemented for grayscale image segmentation based on pixel intensity. ```  ```",
+  "postLab": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "practical-09",
+  "number": 9,
+  "type": "practical",
+  "title": "Object Detection Using Correlation Principle",
+  "category": "Object Detection",
+  "requiresImage": true,
+  "multiImage": true,
+  "aim": "To develop a program to detect an object in an image using the correlation principle.",
+  "objectives": [
+    "To understand the correlation principle used for object detection.",
+    "To identify and locate a specific object within a larger image using template matching.",
+    "To implement correlation-based object detection using OpenCV.",
+    "To calculate the similarity between a template and different regions of the input image.",
+    "To visualize the detected object using a bounding rectangle."
+  ],
+  "theory": "The **Correlation Principle** is a pattern-matching technique used in image processing and computer vision to locate a specific object or pattern within a larger image.\n\nThe basic idea is to use a small image called a **template** and compare it with different regions of a larger input image. The template is systematically moved across the input image, and a similarity or correlation score is calculated at each position.\n\nA high correlation score indicates that the region of the input image is similar to the template.\n\n### Template Matching\n\nTemplate matching is one of the simplest methods of correlation-based object detection. The template is compared with different portions of the target image.\n\nOpenCV provides the `cv2.matchTemplate()` function for performing template matching.\n\n### Correlation Coefficient\n\nThe correlation coefficient measures the similarity between the template and the corresponding region of the input image.\n\nFor normalized correlation, the result generally lies between **-1 and +1**, where a value close to **+1** indicates a strong match.\n\nIn OpenCV, the method:\n\n```python\ncv2.TM_CCOEFF_NORMED\n```\n\ncan be used for normalized correlation-based template matching.\n\n### Working of Correlation-Based Object Detection\n\nThe process consists of the following steps:\n\n1. **Input:** Read the target image and the template image.\n2. **Preprocessing:** Convert the images to grayscale if required.\n3. **Template Matching:** Slide the template over the target image.\n4. **Correlation Calculation:** Calculate a similarity score at every position.\n5. **Peak Detection:** Find locations having high correlation scores.\n6. **Object Localization:** Determine the position of the best matching region.\n7. **Bounding Box:** Draw a rectangle around the detected object.\n\n### Threshold\n\nA threshold can be used to determine whether a particular region is considered a match.\n\nFor example:\n\n```python\nthreshold = 0.8\n```\n\nmeans that only regions having a correlation score of **0.8 or higher** are considered matches.\n\n### Applications\n\nCorrelation-based object detection can be used in:\n\n* Object recognition\n* Surveillance systems\n* Industrial inspection\n* Document analysis\n* Pattern recognition\n* Medical image analysis\n* Computer vision systems\n\n### Limitations\n\nTemplate matching is simple and effective when the object has approximately the same size and orientation as the template. However, its performance can decrease when there are significant changes in:\n\n* Object scale\n* Object rotation\n* Lighting conditions\n* Occlusion\n* Background\n* Object appearance",
+  "algorithm": [
+    "To understand the correlation principle used for object detection.",
+    "To identify and locate a specific object within a larger image using template matching.",
+    "To implement correlation-based object detection using OpenCV.",
+    "To calculate the similarity between a template and different regions of the input image.",
+    "To visualize the detected object using a bounding rectangle."
+  ],
+  "referenceCode": "```python\nimport cv2\nimport numpy as np\n\ndef detect_object(template_path, input_image_path):\n\n    # Read template image in grayscale\n    template = cv2.imread(\n        template_path,\n        cv2.IMREAD_GRAYSCALE\n    )\n\n    # Read target image\n    image = cv2.imread(input_image_path)\n\n    # Check whether images are loaded\n    if template is None:\n        raise FileNotFoundError(\n            \"Template image not found. Check the path.\"\n        )\n\n    if image is None:\n        raise FileNotFoundError(\n            \"Input image not found. Check the path.\"\n        )\n\n    # Convert target image to grayscale\n    gray_image = cv2.cvtColor(\n        image,\n        cv2.COLOR_BGR2GRAY\n    )\n\n    # Get template dimensions\n    template_height, template_width = template.shape\n\n    # Perform normalized correlation-based template matching\n    result = cv2.matchTemplate(\n        gray_image,\n        template,\n        cv2.TM_CCOEFF_NORMED\n    )\n\n    # Find the best match\n    _, max_value, _, max_location = cv2.minMaxLoc(\n        result\n    )\n\n    print(f\"Maximum Correlation Score: {max_value:.4f}\")\n\n    # Set matching threshold\n    threshold = 0.8\n\n    if max_value >= threshold:\n\n        # Top-left corner of detected object\n        top_left = max_location\n\n        # Bottom-right corner\n        bottom_right = (\n            top_left[0] + template_width,\n            top_left[1] + template_height\n        )\n\n        # Draw bounding rectangle\n        cv2.rectangle(\n            image,\n            top_left,\n            bottom_right,\n            (0, 255, 255),\n            2\n        )\n\n        # Display detection result\n        cv2.imshow(\n            \"Detected Object\",\n            image\n        )\n\n        print(\"Object detected successfully.\")\n\n    else:\n\n        cv2.imshow(\n            \"Detected Object\",\n            image\n        )\n\n        print(\"Object not detected.\")\n\n    cv2.waitKey(0)\n    cv2.destroyAllWindows()\n\n\n# Image paths\ntemplate_path = \"i1.jpg\"\ninput_image_path = \"Animals.jpg\"\n\n# Detect object\ndetect_object(\n    template_path,\n    input_image_path\n)\n\nproject_folder/\n│\n├── object_detection.py\n├── i1.jpg\n└── Animals.jpg\n```",
+  "syntax": [
+    "cv2.imread(filename, flag)",
+    "cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)",
+    "cv2.matchTemplate(image, template, method)",
+    "cv2.minMaxLoc(result)",
+    "cv2.rectangle(image, start_point, end_point, color, thickness)",
+    "cv2.imshow(window_name, image)",
+    "cv2.waitKey(0)",
+    "cv2.destroyAllWindows()"
+  ],
+  "parameters": [
+    {
+      "key": "matchThreshold",
+      "label": "Match threshold",
+      "type": "slider",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "default": 0.8
+    }
+  ],
+  "expectedOutputs": [
+    "Detected Object",
+    "Match Score"
+  ],
+  "observation": "Students should record the visual/numerical outcome of running this experiment on their own uploaded image here.",
+  "conclusion": "Thus, object detection using the **correlation principle** was successfully implemented using OpenCV template matching. The template image was compared with different regions of the target image using normalized correlation, and the best-matched object was identified and localized using a bounding rectangle. ``` ```",
+  "postLab": []
+}

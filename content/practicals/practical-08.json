@@ -1,0 +1,111 @@
+{
+  "id": "practical-08",
+  "number": 8,
+  "type": "practical",
+  "title": "Morphological Operations",
+  "category": "Morphological Operations",
+  "requiresImage": true,
+  "multiImage": false,
+  "aim": "To perform morphological operations such as erosion, dilation, opening, and closing on binary images and study their effects on object shapes and noise removal.",
+  "objectives": [
+    "To understand the fundamental concepts of morphological operations such as erosion, dilation, opening, and closing.",
+    "To implement morphological operations using OpenCV.",
+    "To study the role of structuring elements in morphological image processing.",
+    "To analyze the effects of morphological operations on the shape, size, and structure of objects.",
+    "To evaluate opening and closing operations for noise removal, gap filling, and shape restoration."
+  ],
+  "theory": "Morphological operations are image processing techniques used to analyze and modify the shape and structure of objects in an image. They are mainly applied to binary images, although they can also be applied to grayscale images.\n\nMorphological operations use two important components:\n\n### 1. Input Image\n\nA binary image generally contains two intensity values:\n\n* **0 (black):** Background\n* **255 (white):** Foreground/object\n\n### 2. Structuring Element\n\nA structuring element is a small matrix or kernel used to examine the neighborhood of each pixel. Its shape and size determine the effect of the morphological operation.\n\nCommon structuring elements include:\n\n* Rectangular\n* Elliptical\n* Cross-shaped\n\nIn OpenCV, a structuring element can be created using `cv2.getStructuringElement()`.\n\n### 1. Erosion\n\nErosion reduces the size of foreground objects by removing pixels from their boundaries.\n\nIt is useful for:\n\n* Removing small noise\n* Separating connected objects\n* Reducing object boundaries\n* Removing small unwanted details\n\nIn erosion, the output pixel remains foreground only when the structuring element completely fits within the foreground region.\n\n### 2. Dilation\n\nDilation increases the size of foreground objects by adding pixels to their boundaries.\n\nIt is useful for:\n\n* Joining nearby objects\n* Filling small gaps\n* Filling small holes\n* Enhancing object boundaries\n\nIn dilation, the output pixel becomes foreground when at least one pixel covered by the structuring element belongs to the foreground.\n\n### 3. Opening\n\nOpening consists of **erosion followed by dilation**.\n\n**Opening = Erosion → Dilation**\n\nIt is mainly used to remove small objects and noise while preserving the general shape of larger objects.\n\n### 4. Closing\n\nClosing consists of **dilation followed by erosion**.\n\n**Closing = Dilation → Erosion**\n\nIt is mainly used to fill small holes, gaps, and breaks in objects while preserving their overall shape.\n\n### 5. Morphological Gradient\n\nThe morphological gradient is obtained by subtracting the eroded image from the dilated image.\n\n**Morphological Gradient = Dilation − Erosion**\n\nIt is useful for detecting object boundaries.\n\n### 6. Hit-or-Miss Transform\n\nThe hit-or-miss transform is used to detect specific patterns or shapes in a binary image. It considers both foreground and background regions.\n\n### 7. Top-Hat Transform\n\nThe top-hat transform extracts small bright details from an image.\n\n**White Top-Hat = Original − Opening**\n\nIt can be used for highlighting small bright objects or details.\n\n### 8. Skeletonization\n\nSkeletonization reduces an object to a thin skeletal structure while preserving its basic connectivity and shape.\n\n### 9. Pruning\n\nPruning removes small unwanted branches or spurs from a skeletonized image.",
+  "algorithm": [
+    "To understand the fundamental concepts of morphological operations such as erosion, dilation, opening, and closing.",
+    "To implement morphological operations using OpenCV.",
+    "To study the role of structuring elements in morphological image processing.",
+    "To analyze the effects of morphological operations on the shape, size, and structure of objects.",
+    "To evaluate opening and closing operations for noise removal, gap filling, and shape restoration."
+  ],
+  "referenceCode": "```python\nimport cv2\nimport numpy as np\n\n# Load the image\nimage_path = \"morpho.png\"\n\nimage = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)\n\nif image is None:\n    raise FileNotFoundError(\"Image not found. Check the file path.\")\n\n# Convert image to binary\n_, binary = cv2.threshold(\n    image, 127, 255, cv2.THRESH_BINARY\n)\n\n# Create structuring element\nkernel = cv2.getStructuringElement(\n    cv2.MORPH_RECT, (5, 5)\n)\n\n# Erosion\nerosion = cv2.erode(\n    binary, kernel, iterations=1\n)\n\n# Dilation\ndilation = cv2.dilate(\n    binary, kernel, iterations=1\n)\n\n# Opening\nopening = cv2.morphologyEx(\n    binary, cv2.MORPH_OPEN, kernel\n)\n\n# Closing\nclosing = cv2.morphologyEx(\n    binary, cv2.MORPH_CLOSE, kernel\n)\n\n# Display results\ncv2.imshow(\"Original Binary\", binary)\ncv2.imshow(\"Erosion\", erosion)\ncv2.imshow(\"Dilation\", dilation)\ncv2.imshow(\"Opening\", opening)\ncv2.imshow(\"Closing\", closing)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\nimport numpy as np\n\n# Load image\nimage_path = \"photo.jpg\"\n\nimage = cv2.imread(\n    image_path,\n    cv2.IMREAD_GRAYSCALE\n)\n\nif image is None:\n    raise FileNotFoundError(\n        \"Image not found. Check the file path.\"\n    )\n\n# Convert image to binary\n_, binary = cv2.threshold(\n    image, 127, 255, cv2.THRESH_BINARY\n)\n\n# Create structuring element\nkernel = cv2.getStructuringElement(\n    cv2.MORPH_RECT, (5, 5)\n)\n\n# Apply morphological operations\nmorph_ops = {\n    \"Erosion\": cv2.erode(\n        binary, kernel, iterations=1\n    ),\n\n    \"Dilation\": cv2.dilate(\n        binary, kernel, iterations=1\n    ),\n\n    \"Opening\": cv2.morphologyEx(\n        binary, cv2.MORPH_OPEN, kernel\n    ),\n\n    \"Closing\": cv2.morphologyEx(\n        binary, cv2.MORPH_CLOSE, kernel\n    )\n}\n\n\n# Function to calculate object areas\ndef calculate_object_areas(binary_img):\n\n    contours, _ = cv2.findContours(\n        binary_img,\n        cv2.RETR_EXTERNAL,\n        cv2.CHAIN_APPROX_SIMPLE\n    )\n\n    areas = [\n        cv2.contourArea(contour)\n        for contour in contours\n    ]\n\n    return areas, contours\n\n\n# Analyze each operation\nfor op_name, op_img in morph_ops.items():\n\n    areas, contours = calculate_object_areas(\n        op_img\n    )\n\n    print(\n        f\"{op_name}: \"\n        f\"Number of objects = {len(areas)}, \"\n        f\"Areas = {areas}\"\n    )\n\n    # Convert grayscale image to BGR\n    contoured_img = cv2.cvtColor(\n        op_img,\n        cv2.COLOR_GRAY2BGR\n    )\n\n    # Draw contours\n    cv2.drawContours(\n        contoured_img,\n        contours,\n        -1,\n        (0, 0, 255),\n        2\n    )\n\n    cv2.imshow(\n        f\"{op_name} with Contours\",\n        contoured_img\n    )\n\n\n# Display original binary image\ncv2.imshow(\n    \"Original Binary\",\n    binary\n)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n```",
+  "syntax": [
+    "cv2.imread(filename, flag)",
+    "_, binary = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)",
+    "kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))",
+    "cv2.erode(image, kernel, iterations=1)",
+    "cv2.dilate(image, kernel, iterations=1)",
+    "cv2.morphologyEx(image, cv2.MORPH_OPEN, kernel)",
+    "cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)",
+    "cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)",
+    "cv2.contourArea(contour)",
+    "cv2.imshow(window_name, image)",
+    "cv2.waitKey(0)",
+    "cv2.destroyAllWindows()"
+  ],
+  "parameters": [
+    {
+      "key": "binarizeThreshold",
+      "label": "Binarization threshold",
+      "type": "slider",
+      "min": 0,
+      "max": 255,
+      "step": 1,
+      "default": 127
+    },
+    {
+      "key": "kernelSize",
+      "label": "Structuring element size",
+      "type": "select",
+      "default": 5,
+      "options": [
+        {
+          "value": "3",
+          "label": "3x3"
+        },
+        {
+          "value": "5",
+          "label": "5x5"
+        },
+        {
+          "value": "7",
+          "label": "7x7"
+        }
+      ]
+    },
+    {
+      "key": "kernelShape",
+      "label": "Structuring element shape",
+      "type": "select",
+      "default": "rect",
+      "options": [
+        {
+          "value": "rect",
+          "label": "Rectangle"
+        },
+        {
+          "value": "ellipse",
+          "label": "Ellipse"
+        },
+        {
+          "value": "cross",
+          "label": "Cross"
+        }
+      ]
+    },
+    {
+      "key": "iterations",
+      "label": "Iterations",
+      "type": "slider",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 1
+    }
+  ],
+  "expectedOutputs": [
+    "Binary Image",
+    "Erosion",
+    "Dilation",
+    "Opening",
+    "Closing",
+    "Area Analysis"
+  ],
+  "observation": "Students should record the visual/numerical outcome of running this experiment on their own uploaded image here.",
+  "conclusion": "Thus, morphological operations including **erosion, dilation, opening, and closing** were successfully implemented using OpenCV. The effects of different operations on object size, boundaries, noise removal, gap filling, and shape preservation were studied. The importance of selecting a suitable structuring element for morphological image processing was also understood. ``` ```",
+  "postLab": []
+}

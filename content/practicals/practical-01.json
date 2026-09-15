@@ -1,0 +1,44 @@
+{
+  "id": "practical-01",
+  "number": 1,
+  "type": "practical",
+  "title": "Python & IDE Setup for Image Processing (Prelab)",
+  "category": "Setup & Fundamentals",
+  "requiresImage": false,
+  "multiImage": false,
+  "aim": "To introduce Python and set up the development environment required for image processing, including PyCharm/Jupyter and the installation of libraries such as OpenCV, NumPy, Pandas, Scikit-learn, and Matplotlib.",
+  "objectives": [
+    "To understand and run Python programs using different editors and IDEs.",
+    "To understand the use of Python libraries for image processing.",
+    "To install and import required Python libraries.",
+    "To understand the basic use of OpenCV for reading and displaying images.",
+    "To set up a suitable Python development environment for image processing activities."
+  ],
+  "theory": "**Python** is a high-level, interpreted, general-purpose programming language known for its simple and readable syntax. It is widely used in areas such as image processing, machine learning, data analysis, web development, and artificial intelligence.\n\nAn **IDE (Integrated Development Environment)** provides tools required for writing, executing, testing, and debugging programs in one application. Common Python IDEs and editors include PyCharm, Jupyter Notebook, VS Code, Spyder, IDLE, and Google Colab.\n\nThe major Python libraries used in image processing and related activities are:\n\n* **NumPy:** Used for numerical computation and handling multidimensional arrays. Images can be represented and processed as arrays using NumPy.\n* **Pandas:** Used for data manipulation and analysis. It provides data structures such as Series and DataFrame.\n* **Scikit-learn:** A machine learning library used for classification, regression, clustering, preprocessing, and model evaluation.\n* **Matplotlib:** Used for data visualization and displaying images, graphs, histograms, and plots.\n* **OpenCV:** An open-source computer vision library used for image and video processing. It provides functions for reading, displaying, modifying, filtering, and analyzing images.",
+  "algorithm": [
+    "To understand and run Python programs using different editors and IDEs.",
+    "To understand the use of Python libraries for image processing.",
+    "To install and import required Python libraries.",
+    "To understand the basic use of OpenCV for reading and displaying images.",
+    "To set up a suitable Python development environment for image processing activities."
+  ],
+  "referenceCode": "```python\nimport cv2\n\n# Read the image\nimage = cv2.imread(\"image.jpg\")\n\n# Display the image\ncv2.imshow(\"Input Image\", image)\n\n# Wait for a key press\ncv2.waitKey(0)\n\n# Close all windows\ncv2.destroyAllWindows()\n```",
+  "syntax": [
+    "import numpy as np",
+    "import pandas as pd",
+    "import matplotlib.pyplot as plt",
+    "import cv2",
+    "image = cv2.imread(\"image.jpg\")",
+    "cv2.imshow(\"Image\", image)",
+    "cv2.waitKey(0)",
+    "cv2.destroyAllWindows()",
+    "plt.imshow(image)\nplt.show()"
+  ],
+  "parameters": [],
+  "expectedOutputs": [
+    "Environment Check"
+  ],
+  "observation": "Students should record the visual/numerical outcome of running this experiment on their own uploaded image here.",
+  "conclusion": "We have learned about Python, different Python IDEs and development environments, and the installation of important Python libraries used in image processing. We also learned how to use OpenCV to read and display an image. ```  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ```",
+  "postLab": []
+}

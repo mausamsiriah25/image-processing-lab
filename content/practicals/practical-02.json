@@ -1,0 +1,108 @@
+{
+  "id": "practical-02",
+  "number": 2,
+  "type": "practical",
+  "title": "Image I/O, Colour Conversion, Arithmetic & Bitwise Operations",
+  "category": "Fundamentals",
+  "requiresImage": true,
+  "multiImage": true,
+  "aim": "To convert images between different formats such as RGB and Grayscale, and to perform arithmetic and bitwise operations on images using OpenCV.",
+  "objectives": [
+    "To understand RGB, Grayscale, and Binary image formats.",
+    "To convert images between RGB and Grayscale formats.",
+    "To perform arithmetic operations such as addition and subtraction on images.",
+    "To perform bitwise operations such as AND, OR, XOR, and NOT on images.",
+    "To observe the effect of these operations on image pixel values and visual appearance."
+  ],
+  "theory": "### 1. Image and Pixel\n\nA digital image is composed of small elements called **pixels (picture elements)**. Each pixel contains numerical information representing the intensity or color at that particular location.\n\nFor an 8-bit grayscale image, a pixel can have a value from **0 to 255**, where 0 represents black and 255 represents white.\n\n### 2. RGB Image\n\nAn RGB image represents color using three channels:\n\n* **R – Red**\n* **G – Green**\n* **B – Blue**\n\nEach channel generally contains values from 0 to 255 for an 8-bit image. Thus, a color pixel is represented using three values.\n\n### 3. Grayscale Image\n\nA grayscale image contains only intensity information and has a single channel. Pixel values generally range from 0 to 255.\n\nGrayscale images are commonly used because they require less memory and simplify many image processing operations.\n\n### 4. OpenCV\n\n**OpenCV (Open Source Computer Vision Library)** is a Python-compatible computer vision library used for image processing and computer vision applications.\n\nOpenCV provides functions for reading, displaying, saving, converting, and manipulating images.\n\n### Reading an Image\n\nThe `cv2.imread()` function is used to read an image.\n\n**Syntax:**\n\n```python\ncv2.imread(path, flag)\n```\n\nCommon flags are:\n\n```python\ncv2.IMREAD_COLOR       # 1 – Read image in color\ncv2.IMREAD_GRAYSCALE   # 0 – Read image in grayscale\ncv2.IMREAD_UNCHANGED   # -1 – Read image including alpha channel\n```\n\nBy default, OpenCV reads color images in **BGR (Blue, Green, Red)** format.\n\n### Displaying an Image\n\nThe `cv2.imshow()` function displays an image in a window.\n\n**Syntax:**\n\n```python\ncv2.imshow(window_name, image)\n```\n\n### Waiting for a Key\n\n**Syntax:**\n\n```python\ncv2.waitKey(0)\n```\n\n### Closing Windows\n\n**Syntax:**\n\n```python\ncv2.destroyAllWindows()\n```\n\n### Saving an Image\n\nThe `cv2.imwrite()` function is used to save an image.\n\n**Syntax:**\n\n```python\ncv2.imwrite(filename, image)\n```\n\n### BGR to RGB Conversion\n\nMatplotlib uses RGB format, whereas OpenCV uses BGR format. Therefore, an OpenCV image should be converted from BGR to RGB before displaying it correctly using Matplotlib.\n\n**Syntax:**\n\n```python\ncv2.cvtColor(image, cv2.COLOR_BGR2RGB)\n```\n\n### Grayscale Conversion\n\nAn RGB/BGR image can be converted into grayscale using:\n\n**Syntax:**\n\n```python\ncv2.cvtColor(image, cv2.COLOR_BGR2GRAY)\n```\n\n### Arithmetic Operations\n\nArithmetic operations can be performed on images by operating on their pixel values.\n\n#### Addition\n\nThe `cv2.add()` function adds corresponding pixel values of two images.\n\n**Syntax:**\n\n```python\ncv2.add(img1, img2)\n```\n\nWeighted addition can be performed using `cv2.addWeighted()`.\n\n**Syntax:**\n\n```python\ncv2.addWeighted(img1, wt1, img2, wt2, gamma)\n```\n\n#### Subtraction\n\nThe `cv2.subtract()` function subtracts corresponding pixel values of one image from another.\n\n**Syntax:**\n\n```python\ncv2.subtract(img1, img2)\n```\n\n### Bitwise Operations\n\nBitwise operations are useful for image masking, image manipulation, extracting regions of interest, and combining images.\n\nThe major bitwise operations are:\n\n* AND\n* OR\n* XOR\n* NOT\n\n#### Bitwise AND\n\n**Syntax:**\n\n```python\ncv2.bitwise_and(source1, source2, mask=None)\n```\n\nThe AND operation keeps common pixel information from both images.\n\n#### Bitwise OR\n\n**Syntax:**\n\n```python\ncv2.bitwise_or(source1, source2, mask=None)\n```\n\nThe OR operation combines pixel information from both images.\n\n#### Bitwise XOR\n\n**Syntax:**\n\n```python\ncv2.bitwise_xor(source1, source2, mask=None)\n```\n\nThe XOR operation produces different pixel information between the two images.\n\n#### Bitwise NOT\n\n**Syntax:**\n\n```python\ncv2.bitwise_not(source, mask=None)\n```\n\nThe NOT operation inverts the pixel values of an image. For an 8-bit image, a pixel value `P` is approximately transformed to:\n\n```text\n255 - P\n```",
+  "algorithm": [
+    "To understand RGB, Grayscale, and Binary image formats.",
+    "To convert images between RGB and Grayscale formats.",
+    "To perform arithmetic operations such as addition and subtraction on images.",
+    "To perform bitwise operations such as AND, OR, XOR, and NOT on images.",
+    "To observe the effect of these operations on image pixel values and visual appearance."
+  ],
+  "referenceCode": "```python\nimport cv2\n\nimg = cv2.imread(\"tomato.png\", cv2.IMREAD_COLOR)\n\ncv2.imshow(\"Image\", img)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\nimport matplotlib.pyplot as plt\n\nimg = cv2.imread(\"tomato.png\")\n\nplt.imshow(img)\nplt.waitforbuttonpress()\nplt.close('all')\n\nimport cv2\nimport matplotlib.pyplot as plt\n\nimg = cv2.imread(\"geeks.png\")\n\n# Convert BGR to RGB\nRGB_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)\n\n# Display image\nplt.imshow(RGB_img)\nplt.waitforbuttonpress()\nplt.close('all')\n\nimport cv2\n\npath = \"geeksforgeeks.png\"\n\nimg = cv2.imread(path, cv2.IMREAD_GRAYSCALE)\n\ncv2.imshow(\"Grayscale Image\", img)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\n\nimage_path = \"tomato.png\"\nimg = cv2.imread(image_path)\n\nfilename = \"savedImage.jpg\"\n\ncv2.imwrite(filename, img)\n\nprint(\"Image successfully saved.\")\n\nimport cv2\n\nimage1 = cv2.imread(\"input1.jpg\")\nimage2 = cv2.imread(\"input2.jpg\")\n\nweightedSum = cv2.addWeighted(image1, 0.5, image2, 0.4, 0)\n\ncv2.imshow(\"Weighted Image\", weightedSum)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\n\nimage1 = cv2.imread(\"img1.jpg\")\nimage2 = cv2.imread(\"img2.jpg\")\n\nsub = cv2.subtract(image1, image2)\n\ncv2.imshow(\"Subtracted Image\", sub)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\n\nimg1 = cv2.imread(\"input1.png\")\nimg2 = cv2.imread(\"input2.png\")\n\ndest_and = cv2.bitwise_and(img2, img1, mask=None)\n\ncv2.imshow(\"Bitwise AND\", dest_and)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\n\nimg1 = cv2.imread(\"input1.png\")\nimg2 = cv2.imread(\"input2.png\")\n\ndest_or = cv2.bitwise_or(img2, img1, mask=None)\n\ncv2.imshow(\"Bitwise OR\", dest_or)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\n\nimg1 = cv2.imread(\"input1.png\")\nimg2 = cv2.imread(\"input2.png\")\n\ndest_xor = cv2.bitwise_xor(img1, img2, mask=None)\n\ncv2.imshow(\"Bitwise XOR\", dest_xor)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n\nimport cv2\n\nimg1 = cv2.imread(\"input1.png\")\nimg2 = cv2.imread(\"input2.png\")\n\ndest_not1 = cv2.bitwise_not(img1, mask=None)\ndest_not2 = cv2.bitwise_not(img2, mask=None)\n\ncv2.imshow(\"Bitwise NOT - Image 1\", dest_not1)\ncv2.imshow(\"Bitwise NOT - Image 2\", dest_not2)\n\ncv2.waitKey(0)\ncv2.destroyAllWindows()\n```",
+  "syntax": [],
+  "parameters": [
+    {
+      "key": "operation",
+      "label": "Operation",
+      "type": "select",
+      "default": "grayscale",
+      "options": [
+        {
+          "value": "grayscale",
+          "label": "Grayscale Conversion"
+        },
+        {
+          "value": "bgr2rgb",
+          "label": "BGR to RGB"
+        },
+        {
+          "value": "add",
+          "label": "Add (cv2.add)"
+        },
+        {
+          "value": "addWeighted",
+          "label": "Weighted Add"
+        },
+        {
+          "value": "subtract",
+          "label": "Subtract"
+        },
+        {
+          "value": "bitwise_and",
+          "label": "Bitwise AND"
+        },
+        {
+          "value": "bitwise_or",
+          "label": "Bitwise OR"
+        },
+        {
+          "value": "bitwise_xor",
+          "label": "Bitwise XOR"
+        },
+        {
+          "value": "bitwise_not",
+          "label": "Bitwise NOT"
+        }
+      ]
+    },
+    {
+      "key": "weight1",
+      "label": "Weight 1 (addWeighted)",
+      "type": "slider",
+      "min": 0,
+      "max": 1,
+      "step": 0.05,
+      "default": 0.5
+    },
+    {
+      "key": "weight2",
+      "label": "Weight 2 (addWeighted)",
+      "type": "slider",
+      "min": 0,
+      "max": 1,
+      "step": 0.05,
+      "default": 0.5
+    },
+    {
+      "key": "gamma",
+      "label": "Gamma (addWeighted)",
+      "type": "number",
+      "min": -50,
+      "max": 50,
+      "step": 1,
+      "default": 0
+    }
+  ],
+  "expectedOutputs": [
+    "Grayscale/RGB Converted Image",
+    "Arithmetic Result",
+    "Bitwise Result"
+  ],
+  "observation": "Students should record the visual/numerical outcome of running this experiment on their own uploaded image here.",
+  "conclusion": "We have studied different image representations such as RGB, Grayscale, and Binary images. We learned to read, display, save, and convert images using OpenCV. We also performed arithmetic operations such as addition and subtraction and bitwise operations such as AND, OR, XOR, and NOT on images. These operations help in image manipulation, enhancement, masking, and other image processing applications. ``` xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ```",
+  "postLab": []
+}

@@ -26,12 +26,11 @@
 > See the Image Processing Lab in action.
 
 <p align="center">
-  <img src="docs/demo.gif" alt="Image Processing Lab Demo" width="900"/>
+  <img src="docs/image_processing_lab_demo.gif" alt="Image Processing Lab Demo" width="900"/>
 </p>
 
-> 💡 **Tip:** Replace `docs/demo.gif` with your actual demo GIF.
 
----
+
 
 ## 📸 Screenshots
 
@@ -56,21 +55,10 @@
 ### 📊 Processing Results
 
 <p align="center">
-  <img src="docs/screenshots/results.png" alt="Processing Results" width="900"/>
+  <img src="docs/screenshots/result.png" alt="Processing Results" width="900"/>
 </p>
 
-<<<<<<< HEAD
-> 📌 **Screenshot paths**
->
-> Store your screenshots inside:
->
-> `docs/screenshots/`
->
-> and update the filenames above if necessary.
 
----
-=======
->>>>>>> e6cca17 (Added screenshots and Demo.gif . Also make some changes in readme)
 
 # ✨ Features
 
@@ -324,7 +312,7 @@ Image-Processing-Lab/
 │   ├── ARCHITECTURE.md
 │   ├── PRACTICALS.md
 │   ├── DEPLOYMENT.md
-│   ├── demo.gif
+│   ├── image_proccesing_lab_demo.gif
 │   └── screenshots/
 │       ├── home.png
 │       ├── practicals.png

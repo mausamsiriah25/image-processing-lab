@@ -59,6 +59,7 @@
   <img src="docs/screenshots/results.png" alt="Processing Results" width="900"/>
 </p>
 
+<<<<<<< HEAD
 > 📌 **Screenshot paths**
 >
 > Store your screenshots inside:
@@ -68,6 +69,8 @@
 > and update the filenames above if necessary.
 
 ---
+=======
+>>>>>>> e6cca17 (Added screenshots and Demo.gif . Also make some changes in readme)
 
 # ✨ Features
 
